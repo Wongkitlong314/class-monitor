@@ -1,4 +1,6 @@
 #!/bin/bash
+CONDA_BASE=$(conda info --base)
+source "$CONDA_BASE"/etc/profile.d/conda.sh
 if [ "$#" -lt 1 ]; then
     conda install --file ./requirments.txt
 
@@ -11,4 +13,7 @@ else
         conda activate $ENV_NAME
     fi
     conda install --file ./requirments.txt
+    
+    echo -e "\nFinished! The new environment name is $ENV_NAME "
+    echo -e "\nTo activate the environment use:\n\n\tconda activate $ENV_NAME"
 fi
