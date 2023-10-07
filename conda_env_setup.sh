@@ -11,8 +11,10 @@ else
     else
         conda create --name $ENV_NAME
         conda activate $ENV_NAME
+        conda install pip
     fi
     conda install --file ./requirments.txt
+    pip install -r ./pip_requirments.txt
     
     echo -e "\nFinished! The new environment name is $ENV_NAME "
     echo -e "\nTo activate the environment use:\n\n\tconda activate $ENV_NAME"
