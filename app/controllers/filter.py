@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.services import user_service
-from app.models import user
-from app.models import UserMessage
+from app.models.UserMessage import UserMessage
 router = APIRouter()
 
 
-@router.post("/")
-def filter(UserMessage):
+@router.post("/echo")
+def filter(user_msg: UserMessage):
 
-    return UserMessage.text
+    return user_msg.text

@@ -9,6 +9,7 @@ class UserMessage(BaseModel):
     fromNo:str
     fromName:str
     type:str
+    text:str
     timestamp:str
     platform:str
     accountNo:str
