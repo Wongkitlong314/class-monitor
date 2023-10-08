@@ -6,6 +6,6 @@ router = APIRouter()
 
 
 @router.post("/")
-def filter():
+def filter(UserMessage):
 
     return UserMessage.text
