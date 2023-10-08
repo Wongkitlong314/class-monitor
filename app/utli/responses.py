@@ -99,6 +99,12 @@ class DocumentResponse(BasicMediaResponse):
         super().__init__(document_url, "document", text)
 
 if __name__ == "__main__":
-    response = ImageResponse("https://assets.leetcode.com/users/images/770789b0-c96b-4663-86d1-baab25534864_1669795265.8012726.png")
+    response = TextResponse("Hello World!")
+    response = ButtonResponse("Hello World!", ["Hello", "World"])
+    response = ListResponse("Hello World!", "List Title", ["text1", "text2"], ["descrip1", "descrip2"])
+    response = ImageResponse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
+    response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
+    response = DocumentResponse("https://browse.arxiv.org/pdf/2306.00026.pdf")
     text = asyncio.run(response.send())
     print(text)
