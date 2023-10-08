@@ -3,7 +3,6 @@ from app.services import user_service
 from app.models import user
 from app.models import UserMessage
 router = APIRouter()
-router = APIRouter()
 
 
 @router.post("/")
