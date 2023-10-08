@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..services import user_service
-from ..models import user
+from app.services import user_service
+from app.models import user
 
 router = APIRouter()
 
