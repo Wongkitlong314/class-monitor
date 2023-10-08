@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from controllers import user_controller
-from controllers import filter
+from .controllers import user_controller
+from .controllers import filter
 
 app = FastAPI()
 
