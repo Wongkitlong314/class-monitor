@@ -1,7 +1,3 @@
-import sys
-import os
-sys.path.append(os.getcwd())
-print(sys.path)
 from fastapi import FastAPI
 from controllers import user_controller
 
