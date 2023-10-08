@@ -12,7 +12,6 @@ async def get_user_grade():
 
 async def role_play(msg, user_status):
     user_level = get_user_level()
-    user_level = get_user_grade()
     user_interest = get_user_interest()
     # 查看用户是否在对话状态
     # 没有
