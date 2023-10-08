@@ -4,7 +4,7 @@ import asyncio
 import json
 
 class BasicResponse:
-    def __init__(self, text=None, data=None):
+    def __init__(self, text=None, data=None, recipient=None):
         self.text = text if text else ""
         self.data = {
                 "platform" : "WA",
@@ -13,6 +13,8 @@ class BasicResponse:
                 "type" : "text",
                 "text" : self.text
             }
+        if recipient:
+            self.data["to"] = recipient
         if data:
             self.data.update(data)
         self.headers = {
@@ -20,6 +22,7 @@ class BasicResponse:
             'Content-Type': 'application/json'
         }
         self.endpoint = "/message"
+
     async def send(self):
         data = json.dumps(self.data)
         async with httpx.AsyncClient() as client:
