@@ -12,3 +12,5 @@ def read_users(UserMessage):
 
 
 
+if __name__ == "__main__":
+    print(read_users()[0].id)

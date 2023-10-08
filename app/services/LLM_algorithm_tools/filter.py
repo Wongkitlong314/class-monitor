@@ -1,5 +1,8 @@
 import openai
 import json
+from app.utli.responses import TextResponse
+import asyncio
+
 openai.api_key = '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'
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API
@@ -15,20 +18,19 @@ def get_current_weather(location, unit="fahrenheit"):
 
 
 def start_quiz(studentId):
-    return "quiz mode"
+    return TextResponse("start quiz mode")
 
 def start_role_play(studentId):
-    return "role play mode"
+    return TextResponse("role play mode")
 
 def start_writing(studentId):
-    return "writing mode"
+    return TextResponse("writing mode")
 
 def dashboard(studentId):
-    return "dashboard"
+    return TextResponse("dashboard")
 
 def recommend(studentId):
-    return "recommend"
-
+    return TextResponse("recommend")
 
 
 functions = [
@@ -144,7 +146,8 @@ def run_conversation(functions, prompt):
             studentId="123",
             # userId="userId"
         )
-        print(function_response)
+        # print(function_response)
+        asyncio.run(function_response.send())
 
         # # Step 4: send the info on the function call and function response to GPT
         # messages.append(response_message)  # extend conversation with assistant's reply
@@ -161,5 +164,5 @@ def run_conversation(functions, prompt):
         # )  # get a new response from GPT where it can see the function response
         return function_response
     
-prompt = "i want to play"
+prompt = "i want do some quiz"
 run_conversation(functions, prompt)
