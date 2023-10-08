@@ -1,5 +1,4 @@
-from enums import Enum
-
+from enum import Enum
 
 class StatusEnum(Enum):
     BEGIN = 0
@@ -10,5 +9,6 @@ class StatusEnum(Enum):
     QA = 5
     DASHBOARD = 6
     
-
+if __name__=="__main__":
+    print(StatusEnum.QA)
 

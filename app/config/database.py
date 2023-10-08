@@ -13,7 +13,7 @@ url_obj = URL.create(
     password=DATABASE_PASSWORD,
     host=DATABASE_URL,
     port=DATABASE_PORT,
-    database="whatsapp"
+    database="whatsapp-test"
 )
 engine = create_engine(url_obj)
 
