@@ -100,8 +100,8 @@ class DocumentResponse(BasicMediaResponse):
 
 if __name__ == "__main__":
     response = TextResponse("Hello World!")
-    response = ButtonResponse("Hello World!", ["Hello", "World"])
-    response = ListResponse("Hello World!", "List Title", ["text1", "text2"], ["descrip1", "descrip2"])
+    response = ButtonResponse("Hello World!", ["Button1", "Button2"])
+    response = ListResponse("Hello World!", "List Title", ["text1", "text2"])
     response = ImageResponse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
     response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
     response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
