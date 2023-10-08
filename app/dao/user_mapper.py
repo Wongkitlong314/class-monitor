@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import user
-from main.database import SessionLocal, engine
+from ..models import user
+from ..config.database import SessionLocal, engine
 from sqlalchemy.exc import IntegrityError
 
 class UserDAO:
