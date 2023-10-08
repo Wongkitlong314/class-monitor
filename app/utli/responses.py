@@ -1,5 +1,104 @@
-class Response:
-    def __init__(self, status, message, data=None):
-        self.status = status
-        self.message = message
-        self.data = data
+import httpx
+from app.config.config import ACCESSTOKEN, BASEURL, RECIPIENT, BUSSINESS
+import asyncio
+import json
+
+class BasicResponse:
+    def __init__(self, text=None, data=None):
+        self.text = text if text else ""
+        self.data = {
+                "platform" : "WA",
+                "from" : BUSSINESS,
+                "to" : RECIPIENT,
+                "type" : "text",
+                "text" : self.text
+            }
+        if data:
+            self.data.update(data)
+        self.headers = {
+            'Authorization': 'Bearer ' + ACCESSTOKEN,
+            'Content-Type': 'application/json'
+        }
+        self.endpoint = "/message"
+    async def send(self):
+        data = json.dumps(self.data)
+        async with httpx.AsyncClient() as client:
+            response = await client.post(BASEURL + self.endpoint, data=data, headers=self.headers)
+            return response.text
+
+class TextResponse(BasicResponse):
+    def __init__(self, text):
+        super().__init__(text)
+
+class ButtonResponse(BasicResponse):
+    def __init__(self, text, buttons, header=None, image_url=None, file_url=None, footer=None):
+        super().__init__(text)
+        self.data["type"] = "button"
+        self.data["buttons"] = buttons
+        if footer:
+            self.data["footer"] = footer
+        # can't use two types at the same time
+        assert not (header and file_url) and not (header and image_url) and not (file_url and image_url)
+        if header:
+            self.data["headerType"] = "text"
+            self.data["header"] = header
+        if file_url:
+            self.data["headerType"] = "document"
+            self.data["mediaURL"] = file_url
+        if image_url:
+            self.data["headerType"] = "image"
+            self.data["mediaURL"] = image_url
+
+class ListResponse(BasicResponse):
+    def __init__(self, text, listTitle, listData, descriptionData=None):
+        super().__init__(text)
+        self.data["type"] = "list"
+        self.data["listTitle"] = listTitle
+        self.data["listData"] = listData
+        if descriptionData:
+            data = list()
+            for i in range(len(listData)):
+                item = dict()
+                item["title"] = listData[i]
+                item["description"] = descriptionData[i]
+                data.append(item)
+            self.data["listData"] = data
+
+class BasicMediaResponse(BasicResponse):
+    def __init__(self, mediaURL, mediaType, text=None):
+        super().__init__(text)
+        self.data.pop("type")
+        self.data["mediaType"] = mediaType
+        self.endpoint = "/message/media"
+        if mediaURL.startswith("http"):
+            response = httpx.get(mediaURL)
+            self.files = {'file': (mediaURL.split('/')[-1], response.content, 'application/octet-stream')}
+        else:
+            self.files=[('file', (mediaURL.split('/')[-1], open(mediaURL,'rb'), 'application/octet-stream'))]
+        self.headers['Content-Type'] = 'multipart/form-data; boundary=----'
+
+    async def send(self):
+        async with httpx.AsyncClient() as client:
+            response = await client.post(BASEURL + self.endpoint, data=self.data, headers=self.headers, files=self.files)
+            return response.text
+
+class ImageResponse(BasicMediaResponse):
+    def __init__(self, image_url, text=None):
+        super().__init__(image_url, "image", text)
+
+class VideoResponse(BasicMediaResponse):
+    def __init__(self, video_url, text=None):
+        super().__init__(video_url, "video", text)
+
+class AudioResponse(BasicMediaResponse):
+    def __init__(self, audio_url, text=None):
+        super().__init__(audio_url, "audio", text)
+
+class DocumentResponse(BasicMediaResponse):
+    def __init__(self, document_url, text=None):
+        super().__init__(document_url, "document", text)
+
+if __name__ == "__main__":
+    response = ImageResponse("https://assets.leetcode.com/users/images/770789b0-c96b-4663-86d1-baab25534864_1669795265.8012726.png")
+    text = asyncio.run(response.send())
+    print(text)
