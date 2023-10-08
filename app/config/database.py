@@ -1,10 +1,10 @@
 from sqlalchemy import URL
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .config import DATABASE_URL
-from .config import DATABASE_PASSWORD
-from .config import DATABASE_PORT
-from .config import DATABASE_USER
+from app.config.config import DATABASE_URL
+from app.config.config import DATABASE_PASSWORD
+from app.config.config import DATABASE_PORT
+from app.config.config import DATABASE_USER
 
 
 url_obj = URL.create(
