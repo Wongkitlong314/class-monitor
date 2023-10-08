@@ -4,7 +4,9 @@ from app.services import user_service
 router = APIRouter()
 
 
-@router.get("/")
+@router.post("/")
 def filter():
+
+
     # jianquan
     return "{}"
