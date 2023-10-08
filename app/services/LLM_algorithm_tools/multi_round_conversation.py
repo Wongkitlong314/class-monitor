@@ -14,12 +14,12 @@ def get_completion(messages, model="gpt-3.5-turbo", temperature=0):
                 temperature=temperature,
                 request_timeout=50
             )
-            k_tokens = response["usage"]["total_tokens"]/1000
-            p_tokens = response["usage"]["prompt_tokens"]/1000
-            r_tokens = response["usage"]["completion_tokens"]/1000
-            print("Tokens used: {:.2f}k".format(k_tokens))
-            print("Prompt tokens: {:.2f}k".format(p_tokens))
-            print("Response tokens: {:.2f}k".format(r_tokens))
+            # k_tokens = response["usage"]["total_tokens"]/1000
+            # p_tokens = response["usage"]["prompt_tokens"]/1000
+            # r_tokens = response["usage"]["completion_tokens"]/1000
+            # print("Tokens used: {:.2f}k".format(k_tokens))
+            # print("Prompt tokens: {:.2f}k".format(p_tokens))
+            # print("Response tokens: {:.2f}k".format(r_tokens))
 
         except Exception as e:
             #print(e)
