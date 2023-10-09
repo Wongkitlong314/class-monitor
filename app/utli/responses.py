@@ -31,6 +31,10 @@ class BasicResponse:
     
     def change_recipient(self, recipient):
         self.data["to"] = recipient
+    
+    def set_text(self, text):
+        self.data["text"] = text
+        self.text = text
 
 class TextResponse(BasicResponse):
     def __init__(self, text, **kwargs):
