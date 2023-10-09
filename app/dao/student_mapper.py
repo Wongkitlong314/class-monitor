@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models.student import Student
+from app.models.do import Student
 from app.config.database import SessionLocal, engine
 
 

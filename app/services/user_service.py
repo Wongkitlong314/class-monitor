@@ -38,7 +38,7 @@ def create_user(user_msg: Message):
     userDO = user_bot.data["user_info"]
     userDO.name = user_msg.fromName
     userDO.phone = phone
-    userDO.role = Role.STUDENT
+    userDO.role = Role.student
     studentDO = user_bot.data["student_info"]
     ans = user_msg.text
     if user_bot.inner_status == InnerStatus.BEGIN:

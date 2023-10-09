@@ -17,12 +17,12 @@ def echo(message: Union[Message, MessageStatus]):
 @router.post("")
 async def root(message: Union[Message, MessageStatus]):
     if isinstance(message, Message):
-        respnose = service.dispatch(message)
-        respnose.change_recipient(message.fromNo)
-        logger.debug(respnose.data)
-        logger.debug(respnose.text)
+        response = service.dispatch(message)
+        response.change_recipient(message.fromNo)
+        logger.debug(response.data)
+        logger.debug(response.text)
         # use await or not sent
-        await respnose.send()
+        await response.send()
     return 0
     
 @router.post("/call")

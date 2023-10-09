@@ -2,13 +2,13 @@ from enum import Enum
 
 
 class Role(Enum):
-    STUDENT = "student"
-    TEACHER = "teacher"
+    student = "student"
+    teacher = "teacher"
 
 
 class Gender(Enum):
-    MALE = "Male"
-    FEMALE = "Female"
+    M = "Male"
+    F = "Female"
 class EducationLevel(Enum):
     p1_3 = "Primary 1 - 3"
     p4_6 = "Primary 4 - 6"
