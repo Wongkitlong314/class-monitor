@@ -7,7 +7,8 @@ class StudentDAO:
 
     @staticmethod
     def get_all_student(db: Session = SessionLocal()):
-        return db.query(Student).all()
+        result = db.query(Student).all()
+        return db.close()
 
     # @staticmethod
     # def get_user_by_phone(db: Session = SessionLocal(), phone: str = None):

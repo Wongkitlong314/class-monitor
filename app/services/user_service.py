@@ -53,17 +53,20 @@ def create_user(user_msg: Message):
         ask_for_interest(user_bot, ans, studentDO)
     elif user_bot.inner_status == InnerStatus.END:
         end_process(user_bot, ans, studentDO)
-    db = SessionLocal()
+        db = SessionLocal()
 
-    try:
-        db.begin()
-        StudentDAO.insert_student(db, studentDO)
-        db.flush()
-        userDO.role_id = studentDO.id
-        UserDAO.insert_user(db, userDO)
-        db.commit()
-    except:
-        db.rollback()
+        try:
+            db.begin()
+            StudentDAO.insert_student(db, studentDO)
+            db.flush()
+            userDO.role_id = studentDO.id
+            UserDAO.insert_user(db, userDO)
+            db.commit()
+        except Exception as e:
+            print(e)
+            db.rollback()
+        finally:
+            db.close()
     return user_bot.resp
 
 
