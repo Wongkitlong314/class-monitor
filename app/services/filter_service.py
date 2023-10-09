@@ -1,9 +1,9 @@
-from app.models.UserMessage import UserMessage
+from app.models.message import Message
 from app.core.filter import *
 from app.config.config import FUNCTIONS
 from app.dao.user_mapper import UserDAO
 
-def dispatch(user_msg: UserMessage):
+def dispatch(user_msg: Message):
     text = user_msg.text
     user_no = user_msg.fromNo
     print("user_no={}".format(user_no))

@@ -28,6 +28,9 @@ class BasicResponse:
         async with httpx.AsyncClient() as client:
             response = await client.post(BASEURL + self.endpoint, data=data, headers=self.headers)
             return response.text
+    
+    def change_recipient(self, recipient):
+        self.data["to"] = recipient
 
 class TextResponse(BasicResponse):
     def __init__(self, text):
@@ -109,5 +112,6 @@ if __name__ == "__main__":
     response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
     response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
     response = DocumentResponse("https://browse.arxiv.org/pdf/2306.00026.pdf")
+    response.change_recipient(85253640135)
     text = asyncio.run(response.send())
     print(text)

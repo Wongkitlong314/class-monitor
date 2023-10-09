@@ -1,17 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.models.UserMessage import UserMessage
+from app.models.message import Message, MessageStatus
 from app.services import filter_service as service
+from app.utli.responses import TextResponse
+from typing import Union
 router = APIRouter()
 
 
 @router.post("/echo")
-def echo(user_msg: UserMessage):
+def echo(message: Union[Message, MessageStatus]):
 
-    return user_msg.text
-@router.post("/")
-def root():
-    return '{"msg":"nothing here"}'
+    return message.text
+
+@router.post("")
+async def root(message: Union[Message, MessageStatus]):
+    if message.eventType == "Message":
+        respnose = TextResponse(message.text)
+        await respnose.send()
+    return 0
+    
 @router.post("/call")
-def dispatch(user_msg: UserMessage):
-    service.dispatch(user_msg)
+def dispatch(message: Union[Message, MessageStatus]):
+    service.dispatch(message)
     return 0
