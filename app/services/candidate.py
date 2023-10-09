@@ -1,5 +1,5 @@
 from app.services import quiz_service as quiz
-from app.utli.responses import TextResponse
+from app.util.responses import TextResponse
 
 
 def start_quiz(studentId: int):

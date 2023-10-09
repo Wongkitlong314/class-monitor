@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.services import user_service
-from app.models import user
+from app.models import do
 from app.models.message import Message, MessageStatus
 from typing import Union
 router = APIRouter()

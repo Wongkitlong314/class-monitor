@@ -7,7 +7,7 @@ from app.services.candidate import *
 from logging import getLogger
 
 logger = getLogger('app')
-from app.models.user import User
+from app.models.do import User
 from app.services import user_service
 
 
