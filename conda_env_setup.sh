@@ -3,6 +3,7 @@ CONDA_BASE=$(conda info --base)
 source "$CONDA_BASE"/etc/profile.d/conda.sh
 if [ "$#" -lt 1 ]; then
     conda install --file ./requirments.txt
+    pip install -r ./pip_requirments.txt
 
 else
     ENV_NAME=$1
