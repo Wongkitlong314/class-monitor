@@ -27,5 +27,5 @@ class Student(Base):
 
 # quiz
 # yes
-# Primary 1 - 3
-# sports,finance
+# Above
+# sports

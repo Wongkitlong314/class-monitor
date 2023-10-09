@@ -68,6 +68,8 @@ def create_user(user_msg: Message):
             print()
             print("something wrong")
             db.rollback()
+        finally:
+            db.close()
     return user_bot.resp
 
 

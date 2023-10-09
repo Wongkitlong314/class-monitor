@@ -13,7 +13,9 @@ class UserDAO:
     # 更多的CRUD方法...
     @staticmethod
     def get_one_user(db: Session = SessionLocal(), id: int = 1):
-        return db.query(User).filter(User.id == id).all()
+        result = db.query(User).filter(User.id == id).all()
+        db.close()
+        return result
 
     @staticmethod
     def get_user_by_phone(db: Session = SessionLocal(), phone: str = None):
@@ -22,6 +24,7 @@ class UserDAO:
 
         # sql = "SELECT * FROM user where phone = :phone"
         result = db.query(User).filter(User.phone==phone).first()
+        db.close()
         # result =db.query(User).all()[0].name
         return result
     @staticmethod
