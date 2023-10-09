@@ -4,7 +4,8 @@ from enum import Enum
 from app.config.variables import session
 from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
-from app.utli.responses import TextResponse
+from app.util.responses import TextResponse
+
 
 
 def get_all_users():

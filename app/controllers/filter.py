@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.message import Message, MessageStatus
 from app.services import filter_service as service
-from app.utli.responses import TextResponse
+from app.util.responses import TextResponse
 from logging import getLogger
 from typing import Union
 router = APIRouter()

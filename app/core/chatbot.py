@@ -4,7 +4,7 @@ from app.enums.status_enum import StatusEnum
 from enum import Enum
 
 
-class Bot():
+class Bot:
     # id: str  # user's phone number
     # main_status: StatusEnum
     # inner_status: Enum
@@ -33,9 +33,6 @@ class Bot():
     def send(self):
         self.resp.send()
 
-    # def send(self, txt):
-    #     self.resp.text = txt
-    #     self.resp.send()
 
     def next_stage(self, status):
         self.inner_status = status
