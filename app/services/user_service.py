@@ -7,7 +7,7 @@ from app.enums.status_enum import StatusEnum
 from app.util.responses import TextResponse
 from app.util.responses import ButtonResponse
 from app.util.responses import ListResponse
-from app.enums.dao_enum import grade
+from app.enums.dao_enum import EducationLevel,Role
 from app.models.do import User, Student
 
 
@@ -33,6 +33,9 @@ def create_user(user_msg: Message):
         user_bot.data["user_info"] = User()
         user_bot.data["student_info"] = Student()
     userDO = user_bot.data["user_info"]
+    userDO.name = user_msg.fromName
+    userDO.phone = phone
+    userDO.role = Role.STUDENT
     studentDO = user_bot.data["student_info"]
     ans = user_msg.text
     if user_bot.inner_status == InnerStatus.BEGIN:
@@ -45,10 +48,10 @@ def create_user(user_msg: Message):
         ask_for_grade(user_bot, ans)
     elif user_bot.inner_status == InnerStatus.ASK_FOR_INTEREST:
         ask_for_interest(user_bot, ans, studentDO)
+    elif user_bot.inner_status == InnerStatus.END:
+        end_process(user_bot, ans, studentDO)
 
     return user_bot.resp
-
-    ...
 
 
 def begin(bot, loop_back=False):
@@ -66,13 +69,13 @@ def begin(bot, loop_back=False):
 def ask_for_grade(bot, pre_ans, loop_back=False):
     if not loop_back:
         if pre_ans == "yes":
-            bot.resp = ListResponse("Please give me your grade leve: ",
-                                    "Grade Level",
-                                    [grade.p1_3.value,
-                                     grade.p4_6.value,
-                                     grade.s1_3.value,
-                                     grade.s4_6.value,
-                                     grade.u.value])
+            bot.resp = ListResponse("Please give me your education leve: ",
+                                    "Education Level",
+                                    [EducationLevel.p1_3.value,
+                                     EducationLevel.p4_6.value,
+                                     EducationLevel.s1_3.value,
+                                     EducationLevel.s4_6.value,
+                                     EducationLevel.u.value])
         elif pre_ans == "no":
             # do stuff when user say no
             ...
@@ -82,37 +85,60 @@ def ask_for_grade(bot, pre_ans, loop_back=False):
             begin(bot, True)
     else:
         bot.resp = ListResponse("Your choice is not in the list.\n" +
-                                "Please give me your grade leve: ",
-                                "Grade Level",
-                                [grade.p1_3.value,
-                                 grade.p4_6.value,
-                                 grade.s1_3.value,
-                                 grade.s4_6.value,
-                                 grade.u.value])
+                                "Please give me your education level: ",
+                                "Education Level",
+                                [EducationLevel.p1_3.value,
+                                 EducationLevel.p4_6.value,
+                                 EducationLevel.s1_3.value,
+                                 EducationLevel.s4_6.value,
+                                 EducationLevel.u.value])
     bot.inner_status = InnerStatus.ASK_FOR_INTEREST
 
 
 def ask_for_interest(bot, pre_ans, student, loop_back=False):
     if not loop_back:
-        grade_list = [grade.p1_3,
-                      grade.p4_6,
-                      grade.s1_3,
-                      grade.s4_6,
-                      grade.u]
+        grade_list = [EducationLevel.p1_3,
+                      EducationLevel.p4_6,
+                      EducationLevel.s1_3,
+                      EducationLevel.s4_6,
+                      EducationLevel.u]
         found = list(filter(lambda ele: pre_ans == ele.value, grade_list))
         if found:
             student.grade = found[0].name
+            bot.resp = ButtonResponse("Could you tell me some interests of you( separated by ',')",
+                                      ["Skip"])
 
         else:
             # choice not in list
             bot.inner_status = InnerStatus.ASK_FOR_GRADE
             ask_for_grade(bot, pre_ans, loop_back=True)
     else:
-        ...
+        bot.resp = ButtonResponse("Something wrong!\n" +
+                                  "Could you tell me again about some interests of you( separated by ',')",
+                                  ["Skip"])
+
+    bot.inner_status = InnerStatus.END
+
+
+def end_process(bot, pre_ans: str, student):
+    interest = pre_ans.split(",")
+
+    try:
+        student.interest = interest
+        bot.resp = TextResponse("Your process is finished! Now you are in our menu.\n" +
+                                "You can say anything to start a function.\n" +
+                                "eg: Hi bot, start a quiz for me\n" +
+                                "Or you can type '/help' for more information")
+        bot.main_status = StatusEnum.BEGIN
+        bot.inner_status = None
+
+    except:
+        bot.inner_status = InnerStatus.ASK_FOR_INTEREST
+        ask_for_interest(bot, pre_ans, student, loop_back=True)
 
 
 class InnerStatus(Enum):
     BEGIN = 0
     ASK_FOR_GRADE = 1
     ASK_FOR_INTEREST = 2
-    ASK_FOR_ROLE = 3
+    END = 3

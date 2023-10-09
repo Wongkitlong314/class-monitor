@@ -9,7 +9,7 @@ class Role(Enum):
 class Gender(Enum):
     MALE = "Male"
     FEMALE = "Female"
-class grade(Enum):
+class EducationLevel(Enum):
     p1_3 = "Primary 1 - 3"
     p4_6 = "Primary 4 - 6"
     s1_3 = "Secondary 1- 3"
