@@ -14,7 +14,8 @@ def echo(message: Union[Message, MessageStatus]):
 @router.post("")
 async def root(message: Union[Message, MessageStatus]):
     if message.eventType == "Message":
-        respnose = TextResponse(message.text)
+        respnose = TextResponse(message.text, recipient=message.fromNo)
+        # use await or not sent
         await respnose.send()
     return 0
     

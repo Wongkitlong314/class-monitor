@@ -4,7 +4,7 @@ import asyncio
 import json
 
 class BasicResponse:
-    def __init__(self, text=None, data=None, recipient=None):
+    def __init__(self, text=None, data=None, recipient=None, **kwargs):
         self.text = text if text else ""
         self.data = {
                 "platform" : "WA",
@@ -33,12 +33,12 @@ class BasicResponse:
         self.data["to"] = recipient
 
 class TextResponse(BasicResponse):
-    def __init__(self, text):
-        super().__init__(text)
+    def __init__(self, text, **kwargs):
+        super().__init__(text, **kwargs)
 
 class ButtonResponse(BasicResponse):
-    def __init__(self, text, buttons, header=None, image_url=None, file_url=None, footer=None):
-        super().__init__(text)
+    def __init__(self, text, buttons, header=None, image_url=None, file_url=None, footer=None, **kwargs):
+        super().__init__(text, **kwargs)
         self.data["type"] = "button"
         self.data["buttons"] = buttons
         if footer:
@@ -56,8 +56,8 @@ class ButtonResponse(BasicResponse):
             self.data["mediaURL"] = image_url
 
 class ListResponse(BasicResponse):
-    def __init__(self, text, listTitle, listData, descriptionData=None):
-        super().__init__(text)
+    def __init__(self, text, listTitle, listData, descriptionData=None, **kwargs):
+        super().__init__(text, **kwargs)
         self.data["type"] = "list"
         self.data["listTitle"] = listTitle
         self.data["listData"] = listData
@@ -71,8 +71,8 @@ class ListResponse(BasicResponse):
             self.data["listData"] = data
 
 class BasicMediaResponse(BasicResponse):
-    def __init__(self, mediaURL, mediaType, text=None):
-        super().__init__(text)
+    def __init__(self, mediaURL, mediaType, text=None, **kwargs):
+        super().__init__(text, **kwargs)
         self.data.pop("type")
         self.data["mediaType"] = mediaType
         self.endpoint = "/message/media"
@@ -89,20 +89,20 @@ class BasicMediaResponse(BasicResponse):
             return response.text
 
 class ImageResponse(BasicMediaResponse):
-    def __init__(self, image_url, text=None):
-        super().__init__(image_url, "image", text)
+    def __init__(self, image_url,**kwargs):
+        super().__init__(image_url, "image", **kwargs)
 
 class VideoResponse(BasicMediaResponse):
-    def __init__(self, video_url, text=None):
-        super().__init__(video_url, "video", text)
+    def __init__(self, video_url, **kwargs):
+        super().__init__(video_url, "video", **kwargs)
 
 class AudioResponse(BasicMediaResponse):
-    def __init__(self, audio_url, text=None):
-        super().__init__(audio_url, "audio", text)
+    def __init__(self, audio_url, **kwargs):
+        super().__init__(audio_url, "audio", **kwargs)
 
 class DocumentResponse(BasicMediaResponse):
-    def __init__(self, document_url, text=None):
-        super().__init__(document_url, "document", text)
+    def __init__(self, document_url, **kwargs):
+        super().__init__(document_url, "document", **kwargs)
 
 if __name__ == "__main__":
     response = TextResponse("Hello World!")
@@ -112,6 +112,5 @@ if __name__ == "__main__":
     response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
     response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
     response = DocumentResponse("https://browse.arxiv.org/pdf/2306.00026.pdf")
-    response.change_recipient(85253640135)
     text = asyncio.run(response.send())
     print(text)
