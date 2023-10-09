@@ -108,13 +108,13 @@ class DocumentResponse(BasicMediaResponse):
     def __init__(self, document_url, **kwargs):
         super().__init__(document_url, "document", **kwargs)
 
-if __name__ == "__main__":
-    response = TextResponse("Hello World!")
-    response = ButtonResponse("Hello World!", ["Button1", "Button2"])
-    response = ListResponse("Hello World!", "List Title", ["text1", "text2"])
-    response = ImageResponse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
-    response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
-    response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
-    response = DocumentResponse("https://browse.arxiv.org/pdf/2306.00026.pdf")
-    text = asyncio.run(response.send())
-    print(text)
+# if __name__ == "__main__":
+#     response = TextResponse("Hello World!")
+#     response = ButtonResponse("Hello World!", ["Button1", "Button2"])
+#     response = ListResponse("Hello World!", "List Title", ["text1", "text2"])
+#     response = ImageResponse("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
+#     response = VideoResponse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+#     response = AudioResponse("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
+#     response = DocumentResponse("https://browse.arxiv.org/pdf/2306.00026.pdf")
+#     text = asyncio.run(response.send())
+#     print(text)
