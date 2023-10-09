@@ -2,12 +2,26 @@ from app.models.message import Message
 from app.core.filter import *
 from app.config.config import FUNCTIONS
 from app.dao.user_mapper import UserDAO
+from typing import Callable
+from app.services.candidate import *
 
 def dispatch(user_msg: Message):
     text = user_msg.text
     user_no = user_msg.fromNo
     print("user_no={}".format(user_no))
-    result = UserDAO.get_user_by_phone(phone=user_no)
-    print("result = {}".format(result))
-    dispatcher(FUNCTIONS, text)
-    return 0
+    user = UserDAO.get_user_by_phone(phone=user_no)
+    status = user.status
+    function = dispatcher(FUNCTIONS, text)
+
+    # we got a function from function list
+    if match(function,"start_quiz"):
+        function(start_quiz(user.id))
+    elif match(function,"start_role_play"):
+        ...
+    elif match(function,"start_writing"):
+        ...
+    return TextResponse(function.__name__)
+
+
+def match(function:Callable,name:str):
+    return function.__name__ == name

@@ -14,7 +14,7 @@ def echo(message: Union[Message, MessageStatus]):
 @router.post("")
 async def root(message: Union[Message, MessageStatus]):
     if isinstance(message, Message):
-        respnose = TextResponse(message.text, recipient=message.fromNo)
+        respnose = service.dispatch(message)
         print(message)
         # use await or not sent
         await respnose.send()
@@ -22,5 +22,6 @@ async def root(message: Union[Message, MessageStatus]):
     
 @router.post("/call")
 def dispatch(message: Union[Message, MessageStatus]):
-    service.dispatch(message)
+    # resp = service.dispatch(message)
+    # resp.send()
     return 0
