@@ -24,3 +24,8 @@ class Student(Base):
     id = Column(Integer, primary_key=True)
     interest = Column(JSON)
     education_level = Column(Enum(EducationLevel))
+
+# quiz
+# yes
+# Primary 1 - 3
+# sports,finance
