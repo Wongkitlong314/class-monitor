@@ -1,10 +1,15 @@
 from enum import Enum
 
+
 class Role(Enum):
-    student=0
-    teacher=1
+    STUDENT = "student"
+    TEACHER = "teacher"
+
+
 class Gender(Enum):
-    M=1
-    F=0
-if __name__=="__main__":
+    MALE = "Male"
+    FEMALE = "Female"
+
+
+if __name__ == "__main__":
     print(Role.teacher)

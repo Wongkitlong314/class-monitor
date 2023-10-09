@@ -8,6 +8,7 @@ class StatusEnum(Enum):
     DAILY_REC = 4
     QA = 5
     DASHBOARD = 6
+    CREATE = 7
     
 if __name__=="__main__":
     print(StatusEnum.QA)
