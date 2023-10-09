@@ -1,3 +1,7 @@
 __pycache__/
 .DS_Store
 .idea/
+.nohup.out
+.app.log
+nohup.out
+app.log

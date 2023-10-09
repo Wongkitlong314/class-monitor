@@ -2,6 +2,9 @@ import openai
 import json
 from app.services.candidate import *
 import asyncio
+from logging import getLogger
+
+logger = getLogger('app')
 
 openai.api_key = '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'
 # Example dummy function hard coded to return the same weather
@@ -31,7 +34,7 @@ def dispatcher(functions, prompt):
         function_call="auto",  # auto is default, but we'll be explicit
     )
     response_message = response["choices"][0]["message"]
-    print(response_message)
+    logger.debug(response_message)
 
     # Step 2: check if GPT wanted to call a function
     if response_message.get("function_call"):

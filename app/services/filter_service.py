@@ -4,6 +4,9 @@ from app.config.config import FUNCTIONS
 from app.dao.user_mapper import UserDAO
 from typing import Callable
 from app.services.candidate import *
+from logging import getLogger
+
+logger = getLogger('app')
 from app.models.user import User
 from app.services import user_service
 
@@ -13,7 +16,7 @@ from app.services import user_service
 def dispatch(user_msg: Message):
     text = user_msg.text
     user_no = user_msg.fromNo
-    print("user_no={}".format(user_no))
+    logger.debug("user_no={}".format(user_no))
     user = UserDAO.get_user_by_phone(phone=user_no)
     # if this phone doesn't exist, create the user first
 
