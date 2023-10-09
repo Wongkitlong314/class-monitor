@@ -28,7 +28,7 @@ class Bot():
             self.next_function(*args)
 
     def set_txt_resp(self, txt):
-        self.resp.text = txt
+        self.resp.set_text(txt)
 
     def send(self):
         self.resp.send()

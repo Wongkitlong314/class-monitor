@@ -19,7 +19,8 @@ async def root(message: Union[Message, MessageStatus]):
     if isinstance(message, Message):
         respnose = service.dispatch(message)
         respnose.change_recipient(message.fromNo)
-        logger.debug(message)
+        logger.debug(respnose.data)
+        logger.debug(respnose.text)
         # use await or not sent
         await respnose.send()
     return respnose.text
