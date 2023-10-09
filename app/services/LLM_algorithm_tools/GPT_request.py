@@ -23,8 +23,8 @@ def get_completion(prompt, sys_prompt, model="gpt-3.5-turbo", temperature=0):
             print("Response tokens: {:.2f}k".format(r_tokens))
 
         except Exception as e:
-            #print(e)
-            #print("Sleep for {:.2f}s".format(except_waiting_time))
+            print(e)
+            print("Sleep for {:.2f}s".format(except_waiting_time))
             time.sleep(except_waiting_time)
             if except_waiting_time < 2:
                 except_waiting_time *= 2
