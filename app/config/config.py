@@ -6,6 +6,8 @@ ACCESSTOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6Ijg1N2VmM2Ri
 BASEURL = "https://bizmsgapi.ada-asia.com/prod"
 BUSSINESS = "60136951322"
 RECIPIENT = "6588298542"
+OPENAI_API_KEY = "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"
+DASHBOARD_MODEL= "gpt3.5-turbo-0613"
 FUNCTIONS = [
         {
             "id":0,
