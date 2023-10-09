@@ -16,7 +16,6 @@ class User(Base):
     role = Column(Enum(Role),unique=True)
     role_id = Column(Integer,unique=False)
     gender = Column(Enum(Gender),unique=False)
-    status = Column(Enum(StatusEnum),unique=False)
 
 
 class Student(Base):
@@ -24,8 +23,3 @@ class Student(Base):
     id = Column(Integer, primary_key=True)
     interest = Column(JSON)
     education_level = Column(Enum(EducationLevel))
-
-# quiz
-# yes
-# Above
-# sports
