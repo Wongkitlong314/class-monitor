@@ -3,3 +3,5 @@ __pycache__/
 .idea/
 .nohup.out
 .app.log
+nohup.out
+app.log
