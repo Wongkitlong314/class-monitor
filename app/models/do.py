@@ -1,10 +1,10 @@
-from sqlalchemy import Column, Integer, String, Enum,Sequence, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Enum, JSON
 from sqlalchemy.ext.declarative import declarative_base
-from app.enums.dao_enum import Role
-from app.enums.dao_enum import Gender
-from app.enums.status_enum import StatusEnum
 
+from app.enums.dao_enum import Gender
+from app.enums.dao_enum import Role
+from app.enums.dao_enum import grade
+from app.enums.status_enum import StatusEnum
 
 Base = declarative_base()
 
@@ -19,5 +19,8 @@ class User(Base):
     status = Column(Enum(StatusEnum),unique=False)
 
 
-
-
+class Student(Base):
+    __tablename__ = 'student'
+    id = Column(Integer, primary_key=True)
+    interest = Column(JSON)
+    grade = Column(Enum(grade))
