@@ -1,3 +1,4 @@
+from langchain import SQLDatabaseChain
 from langchain.agents import AgentType, create_sql_agent
 from langchain.sql_database import SQLDatabase
 from langchain.agents.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
@@ -19,18 +20,7 @@ llm = ChatOpenAI(model=os.getenv("OPENAI_CHAT_MODEL"),
 
 db = SQLDatabase(engine)
 from langchain.prompts.chat import ChatPromptTemplate
-
-final_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", 
-         """
-          You are a helpful AI assistant expert in querying SQL Database to find answers to user's question about Students, Teachers and Homeworks.
-         """
-         ),
-        ("user", "{question}\n ai: "),
-    ]
-)
-sql_toolkit = SQLDatabaseToolkit(db=db, llm=llm, handle_parsing_errors="Check your output and make sure it conforms!")
+sql_toolkit = SQLDatabaseToolkit(db=db, llm=llm, handle_parsing_errors="Check your output and make sure it conforms!",  return_intermediate_steps=True)
 sql_toolkit.get_tools()
 
 sqldb_agent = create_sql_agent(
@@ -51,7 +41,9 @@ Observation: the result of the action
 Thought: I now know the final answer
 Final Answer: the final answer to the original input question""",
 )
-res = sqldb_agent.run(final_prompt.format(
-        question="How many practices did my students do in the last month? "
-  ), )
-print(res)
+message = [{"role":"system", "content":"You are a helpful AI assistant expert in querying SQL Database to find answers to user's question about Students, Teachers and Homeworks."},{"role":"user", "content":"How many practices did my students do in the last year?\n ai: "}]
+db_chain = SQLDatabaseChain.from_llm(llm, db, prompt=message, verbose=True, use_query_checker=True, return_intermediate_steps=True)
+result = db_chain("How many employees are there in the foobar table?")
+print(result["intermediate_steps"])
+# res = sqldb_agent.run(message)
+# print(res)
