@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from app.enums.dao_enum import Gender
 from app.enums.dao_enum import Role
-from app.enums.dao_enum import grade
+from app.enums.dao_enum import EducationLevel
 from app.enums.status_enum import StatusEnum
 
 Base = declarative_base()
@@ -23,4 +23,4 @@ class Student(Base):
     __tablename__ = 'student'
     id = Column(Integer, primary_key=True)
     interest = Column(JSON)
-    grade = Column(Enum(grade))
+    education_level = Column(Enum(EducationLevel))

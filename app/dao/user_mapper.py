@@ -24,3 +24,6 @@ class UserDAO:
         result = db.query(User).filter(User.phone==phone).first()
         # result =db.query(User).all()[0].name
         return result
+    @staticmethod
+    def insert_user(db:Session = SessionLocal(),userDO:User=None):
+        db.add(userDO)

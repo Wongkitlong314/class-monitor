@@ -16,7 +16,7 @@ class PromptConstructor:
 
 if __name__ == "__main__":
     import os
-    prompt = PromptConstructor("../prompt_templates/prompt_test.txt", "sports","ava","fasfa").get()
+    prompt = PromptConstructor("app/prompt_templates/prompt_test.txt", "sports","ava","fasfa").get()
     print(prompt)
 
 

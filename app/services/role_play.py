@@ -1,18 +1,19 @@
-# 需要软注册
-async def get_user_level():
-    # 获取当前用户的英语水平
+from app.dao import student_mapper
+def get_all_student():
+    result = student_mapper.StudentDAO.get_all_users()
+    # handle the result here
+    return result
+
+def get_user_interest():
     pass
 
-async def get_user_interest():
-    pass
-
-async def get_user_grade():
+def get_user_grade():
     pass
 
 
-async def role_play(msg, user_status):
-    user_level = get_user_level() # git test
-    user_interest = get_user_interest()
+def role_play(msg):
+    stu_grade = get_user_grade()
+    stu_interest = get_user_interest()
     # 查看用户是否在对话状态
     # 没有
         # while True:
@@ -29,3 +30,5 @@ async def role_play(msg, user_status):
 
 
 
+if __name__=="__main__":
+    print(get_all_student()[0])
