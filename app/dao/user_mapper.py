@@ -21,7 +21,6 @@ class UserDAO:
             return None
 
         # sql = "SELECT * FROM user where phone = :phone"
-        print("phone={}".format(phone))
         result = db.query(User).filter(User.phone==phone)[0]
         # result =db.query(User).all()[0].name
         return result
