@@ -42,7 +42,7 @@ def create_user(user_msg: Message):
     elif user_bot.inner_status == InnerStatus.ASK_FOR_GRADE:
         # answer for previous question
 
-        ask_for_grade(user_bot, ans, studentDO, userDO)
+        ask_for_grade(user_bot, ans)
     elif user_bot.inner_status == InnerStatus.ASK_FOR_INTEREST:
         ask_for_interest(user_bot, ans, studentDO)
 
