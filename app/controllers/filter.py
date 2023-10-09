@@ -22,7 +22,7 @@ async def root(message: Union[Message, MessageStatus]):
         logger.debug(message)
         # use await or not sent
         await respnose.send()
-    return 0
+    return respnose.text
     
 @router.post("/call")
 def dispatch(message: Union[Message, MessageStatus]):
