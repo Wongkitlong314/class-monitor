@@ -7,8 +7,11 @@ from app.enums.status_enum import StatusEnum
 from app.util.responses import TextResponse
 from app.util.responses import ButtonResponse
 from app.util.responses import ListResponse
-from app.enums.dao_enum import EducationLevel,Role
+from app.enums.dao_enum import EducationLevel, Role
 from app.models.do import User, Student
+from app.config.database import SessionLocal
+from app.dao.user_mapper import UserDAO
+from app.dao.student_mapper import StudentDAO
 
 
 def get_all_users():
@@ -50,7 +53,16 @@ def create_user(user_msg: Message):
         ask_for_interest(user_bot, ans, studentDO)
     elif user_bot.inner_status == InnerStatus.END:
         end_process(user_bot, ans, studentDO)
+    db = SessionLocal()
+    db.begin()
+    try:
 
+        StudentDAO.insert_student(db, studentDO)
+        db.flush()
+        userDO.role_id = studentDO.id
+        UserDAO.insert_user(db, userDO)
+    except:
+        db.rollback()
     return user_bot.resp
 
 
