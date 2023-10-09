@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field
 from typing import Optional, Callable
 from app.enums.status_enum import StatusEnum
 from enum import Enum
