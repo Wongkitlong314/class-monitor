@@ -15,7 +15,8 @@ def dispatch(user_msg: Message):
 
     # we got a function from function list
     if match(function,"start_quiz"):
-        function(start_quiz(user.id))
+
+        return function(user.id)
     elif match(function,"start_role_play"):
         ...
     elif match(function,"start_writing"):

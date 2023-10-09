@@ -1,3 +1,3 @@
+from app.utli.responses import TextResponse
 def start_quiz(studentId:int):
-    print("student {} starting quiz".format(studentId))
-    return 0
+    return TextResponse("student {} starting quiz".format(studentId))

@@ -3,8 +3,8 @@ from app.utli.responses import TextResponse
 
 
 def start_quiz(studentId: int):
-    quiz.start_quiz(studentId)
-    return 0
+
+    return quiz.start_quiz(studentId)
 
 
 def start_role_play(studentId):
