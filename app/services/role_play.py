@@ -60,16 +60,16 @@ if __name__ == "__main__":
     # stu_interest =', '.join(stu.interest)
     # stu_edu_level = stu.education_level.value
     # print(status_enum.StatusEnum.ROLE_PLAYING.value)
-    stu_id = user_mapper.UserDAO.get_user_by_phone(phone='85253640135').id
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone='85253640135').role_id
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
     stu_interest = ', '.join(stu.interest)
     stu_edu_level = stu.education_level.value
     print(stu_interest)
     print(stu_edu_level)
-    speaking_task_description = prompt.PromptConstructor('app/prompt_templates/role_play_prompt.txt').get()
+    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
     messages = [
         {"role": "system", "content": speaking_task_description},
         {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
         {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
-    chat_response = get_completion(messages, temperature=0.9)
+    chat_response = get_completion(messages, temperature=0.7)
     print(chat_response)
