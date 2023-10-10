@@ -40,7 +40,6 @@ def start_role_play(user_msg):
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['role_play_msg'] = messages
-        print(messages)
         return TextResponse(chat_response)
 
     else:
