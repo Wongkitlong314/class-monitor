@@ -21,3 +21,13 @@ def dashboard(studentId):
 
 def recommend(studentId):
     return TextResponse("recommend")
+
+
+def talk_english_learning_topic(userMsg):
+    # dummy function
+    ...
+
+
+def introduce_function(userMsg):
+    # dummy function
+    ...

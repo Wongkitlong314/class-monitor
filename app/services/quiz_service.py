@@ -23,28 +23,77 @@ def start_quiz(msg: Message):
                               ["Ok", "/exit"])
     elif bot.inner_status == InnerStatus.DOING:
         # doing quiz. iterate the questions.
-        quiz = bot.data.get(data_key, form_quiz(1, 1, 1))
+        if data_key not in bot.data:
+            bot.data[data_key] = form_quiz(3)
+        quiz = bot.data[data_key]
+        resps = []
+        pre_ans = msg.text
+        if quiz.cur > -1:
+            cur_question = quiz.get_cur_question()
+            cur_difficulty = cur_question.difficulty
+            if quiz.check(pre_ans):
+                # did correct
+                if cur_difficulty == QuestionDifficulty.HARD:
+                    resps.append(TextResponse("You did right!"))
+                    quiz.add(QuestionDifficulty.HARD)
+                else:
+                    if cur_difficulty == QuestionDifficulty.EASY:
+
+                        quiz.add(QuestionDifficulty.MEDIUM)
+                    else:
+                        quiz.add(QuestionDifficulty.HARD)
+                    resps.append(TextResponse("You did right!" +
+                                              "Let's do more difficult question"))
+                quiz.score += 1
+            else:
+
+                if not cur_difficulty == QuestionDifficulty.EASY:
+                    resps.append(TextResponse("Sorry you did wrongly" +
+                                              "The correct answer" +
+                                              " should be {}".format(cur_question.choices[cur_question.answer]) +
+                                              "\nThe explanation is:\n{}".format(cur_question.explanation)+
+                                              "Let's do something easier!"))
+                    if cur_difficulty == QuestionDifficulty.HARD:
+                        quiz.add(QuestionDifficulty.MEDIUM)
+                    else:
+                        quiz.add(QuestionDifficulty.EASY)
+                else:
+                    resps.append(TextResponse("Sorry you did wrongly" +
+                                              "The correct answer" +
+                                              " should be {}".format(cur_question.choices[cur_question.answer]) +
+                                              "\nThe explanation is:\n{}".format(cur_question.explanation)))
+                    quiz.add(QuestionDifficulty.EASY)
+
         resp = quiz.get_question()
+        resps.append(resp)
+
         if resp:
-            return resp
+            print(resps)
+            return resps
+        else:
+            bot.main_status = StatusEnum.BEGIN
+            return resps[:len(resps)-1]
 
     return TextResponse("function developing, but at least you finished the quiz")
 
 
-def form_quiz(easy: int, medium: int, hard: int) -> UserQuizStatus:
+def form_quiz(n) -> UserQuizStatus:
     # randomly form a quiz
     # it is not the most efficient way. will be changed in future
+    print("create a quiz")
     easy_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.EASY)
     medium_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.MEDIUM)
     hard_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.HARD)
 
-    easy_question = random.sample(easy_question, min(easy, len(easy_question)))
-    medium_question = random.sample(medium_question, min(medium, len(medium_question)))
-    hard_question = random.sample(hard_question, min(hard, len(hard_question)))
-    questions = easy_question + medium_question + hard_question
-    random.shuffle(questions)
+    easy_question = random.sample(easy_question, min(n, len(easy_question)))
+    medium_question = random.sample(medium_question, min(n, len(medium_question)))
+    hard_question = random.sample(hard_question, min(n, len(hard_question)))
 
-    return UserQuizStatus(questions=questions)
+    result = UserQuizStatus(n, reserve_easy=easy_question,
+                            reserve_medium=medium_question,
+                            reserve_hard=hard_question)
+
+    return result
 
 
 def quiz_exit(msg: Message):
