@@ -7,6 +7,8 @@ from logging import getLogger
 logger = getLogger('app')
 
 openai.api_key = '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'
+
+
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API
 def get_current_weather(location, unit="fahrenheit"):
@@ -18,9 +20,6 @@ def get_current_weather(location, unit="fahrenheit"):
         "forecast": ["sunny", "windy"],
     }
     return json.dumps(weather_info)
-
-
-
 
 
 def dispatcher(functions, prompt):
@@ -49,7 +48,6 @@ def dispatcher(functions, prompt):
         }  # only one function in this example, but you can have multiple
         function_name = response_message["function_call"]["name"]
 
-
         function_to_call = available_functions[function_name]
         # print(function_to_call)
         # function_args = json.loads(response_message["function_call"]["arguments"])
@@ -61,8 +59,7 @@ def dispatcher(functions, prompt):
         # function_response.send()
 
         # # Step 4: send the info on the function call and function response to GPT
-        if function_to_call:
-            return function_to_call
-        else:
-            return response_message["content"]
 
+        return function_to_call
+
+    return response_message["content"]
