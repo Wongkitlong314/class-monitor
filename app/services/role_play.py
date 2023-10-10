@@ -8,6 +8,7 @@ from app.config.variables import session
 class Bot:
     def __init__(self, id, data=dict()):
         self.id = id
+        self.data = data
 
 # 退出role_play，删掉聊天记录，提示用户role-play结束
 def exit_role_play(user_msg):
