@@ -36,7 +36,7 @@ def start_role_play(user_msg):
             {"role": "system", "content": speaking_task_description},
             {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
             {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages, temperature=0.6)
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['role_play_msg'] = messages
@@ -52,7 +52,7 @@ def start_role_play(user_msg):
 
         # 存储用户回复后，发给chatgpt
         messages = user_bot.data['role_play_msg']
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages, temperature=0.6)
 
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
@@ -77,4 +77,5 @@ if __name__ == "__main__":
         {"role": "system", "content": speaking_task_description},
         {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
         {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
-    chat_response = get_completion(messages, temperature=0)
+    chat_response = get_completion(messages, temperature=0.6)
+    print(chat_response)
