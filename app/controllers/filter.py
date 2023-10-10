@@ -25,7 +25,7 @@ async def root(message: Union[Message, MessageStatus]):
         logger.debug(response.text)
         # use await or not sent
         await response.send()
-    return response.text
+    return 0
 
 @router.post("/call")
 def dispatch(message: Union[Message, MessageStatus]):
