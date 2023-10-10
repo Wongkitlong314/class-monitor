@@ -3,9 +3,16 @@ from app.models.do import Question
 
 
 class UserQuizStatus:
-    def __init__(self, id=None, questions: Question = None, education_level=None):
+    def __init__(self, id=None,reserve_easy=None,
+                 reserve_medium=None,
+                 reserve_hard=None,
+                 education_level=None):
         self.id = id
-        self.questions = questions
+        self.questions = []
+
+        self.reserve_easy = reserve_easy
+        self.reserve_medium = reserve_medium
+        self.reserve_hard = reserve_hard
         self.education_level = education_level
         self.fished = False
         self.cur = 0

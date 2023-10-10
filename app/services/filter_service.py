@@ -7,6 +7,7 @@ from logging import getLogger
 from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
 from app.services.quiz_service import quiz_exit, start_quiz
+from app.services.role_play import exit_role_play
 
 logger = getLogger('app')
 from app.services import user_service
@@ -37,11 +38,12 @@ def dispatch(user_msg: Message):
         # return to begin stage and execute exit functions of each current status
         if status == StatusEnum.QUIZ:
             quiz_exit(user_msg)
-            bot.main_status = StatusEnum.BEGIN
-            return TextResponse("You've returned to the menu.")
+        elif status == StatusEnum.ROLE_PLAYING:
+            exit_role_play(user_msg)
         elif status == StatusEnum.BEGIN:
             return TextResponse("You already in the menu.")
-
+        bot.main_status = StatusEnum.BEGIN
+        return TextResponse("You've returned to the menu.")
     if status != StatusEnum.BEGIN:
         # in other process
         # execute cont. function here
@@ -56,7 +58,8 @@ def dispatch(user_msg: Message):
 
         return function(user_msg)
     elif match(function, "start_role_play"):
-        ...
+        bot.main_status = StatusEnum.ROLE_PLAYING
+        return function(user_msg)
     elif match(function, "start_writing"):
         ...
     return TextResponse(function.__name__)
