@@ -75,7 +75,8 @@ def dispatch(user_msg: Message):
         ...
     elif match(function, "talk_english_learning_topic"):
         sys_pmt = "You are a english learning assistant and a expert in education. " \
-                  "Given student's message, you will give kind reply."
+                  "Given student's message, you will give kind reply." \
+                  "And try your best to guide the topic back to english learning."
         prompt = "Student message: " + user_msg.text
         response = GPT_request.get_completion(prompt=prompt, sys_prompt=sys_pmt)
         return TextResponse(response)
