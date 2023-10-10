@@ -20,7 +20,7 @@ def dispatch(user_msg: Message):
     logger.debug("user_no={}".format(user_no))
 
     bot = session.get(user_no, None)
-    if not bot:
+    if not bot or bot.main_status == StatusEnum.CREATE:
         user = UserDAO.get_user_by_phone(phone=user_no)
         # if this phone doesn't exist, create the user first
 
