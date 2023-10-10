@@ -46,6 +46,15 @@ def form_quiz(easy: int, medium: int, hard: int) -> UserQuizStatus:
 
     return UserQuizStatus(questions=questions)
 
+def quiz_exit(msg: Message):
+    phone = msg.fromNo
+    bot = session.get(phone)
+    try:
+        del bot.data[data_key]
+    except Exception as e:
+        # todo change it to log later
+        print(e)
+
 
 class InnerStatus(Enum):
     DOING = 0
