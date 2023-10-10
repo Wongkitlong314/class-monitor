@@ -18,8 +18,8 @@ def start_role_play(user_msg):
     user_bot = session[user_msg.fromNo]
     user_phone = user_msg.fromNo
     user_msg_txt = user_msg.text
-    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
-    stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).id
+    speaking_task_description = prompt.PromptConstructor('app/prompt_templates/role_play_prompt.txt').get()
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).role_play
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
     stu_interest = ', '.join(stu.interest)
     stu_edu_level = stu.education_level.value
@@ -28,7 +28,7 @@ def start_role_play(user_msg):
             {"role": "system", "content": speaking_task_description},
             {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
             {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
-        chat_response = get_completion(messages, temperature=0.9)
+        chat_response = get_completion(messages, temperature=0.7)
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['role_play_msg'] = messages
@@ -44,7 +44,7 @@ def start_role_play(user_msg):
 
         # 存储用户回复后，发给chatgpt
         messages = user_bot.data['role_play_msg']
-        chat_response = get_completion(messages, temperature=0.9)
+        chat_response = get_completion(messages, temperature=0.7)
 
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     stu_edu_level = stu.education_level.value
     print(stu_interest)
     print(stu_edu_level)
-    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
+    speaking_task_description = prompt.PromptConstructor('app/prompt_templates/role_play_prompt.txt').get()
     messages = [
         {"role": "system", "content": speaking_task_description},
         {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
