@@ -32,7 +32,7 @@ def root(message: Union[Message, MessageStatus]):
                 logger.debug(r.data)
                 logger.debug(r.text)
                 # use await or not sent
-
+                time.sleep(1)
                 r.sync_send()
         else:
             response.change_recipient(message.fromNo)
