@@ -5,7 +5,7 @@ from app.services import filter_service as service
 from app.util.responses import TextResponse
 from logging import getLogger
 from app.services import question_service as service
-from enums.dao_enum import QuestionDifficulty
+from app.enums.dao_enum import QuestionDifficulty
 
 router = APIRouter()
 

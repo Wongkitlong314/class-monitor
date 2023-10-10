@@ -1,5 +1,5 @@
 from app.dao.question_mapper import QuestionDao
-from enums.dao_enum import QuestionDifficulty
+from app.enums.dao_enum import QuestionDifficulty
 
 
 def get_all():
