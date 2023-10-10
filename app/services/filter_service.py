@@ -54,7 +54,8 @@ def dispatch(user_msg: Message):
             return start_role_play(user_msg)
 
     function = dispatcher(FUNCTIONS, text)
-
+    if not callable(function):
+        return TextResponse(str(function))
     # we got a function from function list
     if match(function, "start_quiz"):
         bot.main_status = StatusEnum.QUIZ

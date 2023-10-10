@@ -66,10 +66,13 @@ def start_quiz(msg: Message):
 
         resp = quiz.get_question()
         resps.append(resp)
-        print(bot.data.keys())
-        if resps:
+
+        if resp:
             print(resps)
             return resps
+        else:
+            bot.main_status = StatusEnum.BEGIN
+            return resps[:len(resps)-1]
 
     return TextResponse("function developing, but at least you finished the quiz")
 

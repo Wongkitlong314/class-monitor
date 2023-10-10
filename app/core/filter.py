@@ -61,5 +61,8 @@ def dispatcher(functions, prompt):
         # function_response.send()
 
         # # Step 4: send the info on the function call and function response to GPT
+        if function_to_call:
+            return function_to_call
+        else:
+            return response_message["content"]
 
-        return function_to_call
