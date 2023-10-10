@@ -3,15 +3,20 @@ from app.dao import user_mapper
 from app.util import prompt
 from app.core.GPT_stored_message import get_completion
 from app.util.responses import TextResponse
+from app.config.variables import session
 
 # 退出role_play，删掉聊天记录，提示用户role-play结束
-def exit_role_play(user_bot):
+def exit_role_play(user_msg):
+    user_bot = session[user_msg.fromNo]
     del user_bot.data['role_play_message']
     return TextResponse('Role-playing ends. Thank you!')
 
 # 传入用户消息类，用户bot，用户id（电话号码）
 # 返回chatgpt的回复：response 类
-def start_role_play(user_msg, user_bot, user_phone):
+
+def start_role_play(user_msg):
+    user_bot = session[user_msg.fromNo]
+    user_phone = user_msg.fromNo
     user_msg_txt = user_msg.text
     speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
     stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).id
@@ -66,5 +71,5 @@ if __name__ == "__main__":
         {"role": "system", "content": speaking_task_description},
         {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
         {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
-    chat_response = get_completion(messages, temperature=0.6)
+    chat_response = get_completion(messages, temperature=0.9)
     print(chat_response)
