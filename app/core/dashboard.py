@@ -1,6 +1,6 @@
 #%%
 import sys
-sys.path.append("/Users/chenyuxin/Documents/Class-Monitor")
+sys.path.append("/Users/chenyuxin/Documents/new_class_monitor/Class-Monitor")
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain.agents import AgentType, create_sql_agent
 from langchain.sql_database import SQLDatabase
@@ -8,14 +8,14 @@ from langchain.agents.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain.chat_models import ChatOpenAI
 from sqlalchemy import create_engine
 from app.config.database import engine
-from app.config.config import DASHBOARD_MODEL, OPENAI_API_KEY
+# from app.config.config import OPENAI_API_KEY
 import os
 # from dotenv import load_dotenv
 
 # os.environ["OPENAI_API_TYPE"]="open_ai"
 # os.environ["OPENAI_API_VERSION"]="2020-11-07"
 # os.environ["OPENAI_API_BASE"]="https://api.openai.com/v1" # Your Azure OpenAI resource endpoint
-os.environ["OPENAI_API_KEY"]=OPENAI_API_KEY # Your Azure OpenAI resource key
+os.environ["OPENAI_API_KEY"]='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' # Your Azure OpenAI resource key
 os.environ["OPENAI_CHAT_MODEL"]="gpt-3.5-turbo-16k-0613" # Use name of deployment
 
 llm = ChatOpenAI(model=os.getenv("OPENAI_CHAT_MODEL"),
@@ -46,7 +46,8 @@ Final Answer: the final answer to the original input question""",
 )
 message = [{"role":"system", "content":"You are a helpful AI assistant expert in querying SQL Database to find answers to user's question about Students, Teachers and Homeworks."},{"role":"user", "content":"How many practices did my students do in the last year?\n ai: "}]
 db_chain = SQLDatabaseChain.from_llm(llm, db,  verbose=True, use_query_checker=True, return_intermediate_steps=True)
-result = db_chain("How many practices did my students do in the last year?")
+# result = db_chain("How many practices did my students do in the last year?")
+result = db_chain("How many practices and daily read did my students do in the last year order by date? Return in list.")
 print(result["intermediate_steps"])
 # res = sqldb_agent.run(message)
 # print(res)
