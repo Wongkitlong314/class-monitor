@@ -1,34 +1,70 @@
 from app.dao import student_mapper
-def get_all_student():
-    result = student_mapper.StudentDAO.get_all_users()
-    # handle the result here
-    return result
+from app.dao import user_mapper
+from app.util import prompt
+from app.core.GPT_stored_message import get_completion
+from app.util.responses import TextResponse
 
-def get_user_interest():
-    pass
+# 退出role_play，删掉聊天记录，提示用户role-play结束
+def exit_role_play(user_bot):
+    del user_bot.data['role_play_message']
+    return TextResponse('Role-playing ends. Thank you!')
 
-def get_user_grade():
-    pass
+# 传入用户消息类，用户bot，用户id（电话号码）
+# 返回chatgpt的回复：response 类
+def start_role_play(user_msg, user_bot, user_phone):
+    user_msg_txt = user_msg.text
+    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).id
+    stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
+    stu_interest = ', '.join(stu.interest)
+    stu_edu_level = stu.education_level.value
+    if 'role_play_msg' not in user_bot.data:
+        messages = [
+            {"role": "system", "content": speaking_task_description},
+            {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
+            {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
+        chat_response = get_completion(messages, temperature=0.9)
+        # 存储chatgpt的回复
+        messages.append({"role": "system", "content": chat_response})
+        user_bot.data['role_play_msg'] = messages
+        return TextResponse(chat_response)
 
+    else:
+        # 获取user的之前role play的message
+        messages = user_bot.data['role_play_msg']
 
-def role_play(msg):
-    stu_grade = get_user_grade()
-    stu_interest = get_user_interest()
-    # 查看用户是否在对话状态
-    # 没有
-        # while True:
-            # 根据用户的level, grade, interest生成prompt，提交到chatgpt 生成对话场景
-            # 场景包含 scenario, backgroud, them,roles
-            # 询问学生是否满意
-            # If 满意
-                # 询问学生扮演的角色
-                # break；
-    # 记录 开始对话 =场景+学生角色+（你先开始，只说你扮演角色的台词，然后等待我的回复） send to chatgpt return to student
-    # begin converstation
-        # sent chatgpt_msg to student
-        # sent student msg to chatgpt 开始对话+之前对话
+        # 存储用户的回复
+        messages.append({"role": "user", "content": user_msg_txt})
+        user_bot.data['role_play_msg'] = messages
 
+        # 存储用户回复后，发给chatgpt
+        messages = user_bot.data['role_play_msg']
+        chat_response = get_completion(messages, temperature=0.9)
 
+        # 存储chatgpt的回复
+        messages.append({"role": "system", "content": chat_response})
 
-if __name__=="__main__":
-    print(get_all_student()[0])
+        # 更新内存中的message
+        user_bot.data['role_play_msg'] = messages
+
+        # 返回chatgpt对话：string
+        return TextResponse(chat_response)
+
+if __name__ == "__main__":
+    # stu = student_mapper.StudentDAO.get_student_by_id(id=1)
+    # stu_interest =', '.join(stu.interest)
+    # stu_edu_level = stu.education_level.value
+    # print(status_enum.StatusEnum.ROLE_PLAYING.value)
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone='85253640135').id
+    stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
+    stu_interest = ', '.join(stu.interest)
+    stu_edu_level = stu.education_level.value
+    print(stu_interest)
+    print(stu_edu_level)
+    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
+    messages = [
+        {"role": "system", "content": speaking_task_description},
+        {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
+        {"role": "user", "content": "My interest is: %s " % (stu_interest)}]
+    chat_response = get_completion(messages, temperature=0.6)
+    print(chat_response)

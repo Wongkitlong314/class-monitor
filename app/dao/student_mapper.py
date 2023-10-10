@@ -8,7 +8,8 @@ class StudentDAO:
     @staticmethod
     def get_all_student(db: Session = SessionLocal()):
         result = db.query(Student).all()
-        return db.close()
+        db.close()
+        return result
 
     # @staticmethod
     # def get_user_by_phone(db: Session = SessionLocal(), phone: str = None):
@@ -22,3 +23,9 @@ class StudentDAO:
     @staticmethod
     def insert_student(db: Session = SessionLocal(), studentDO: Student = None):
         db.add(studentDO)
+
+    @staticmethod
+    def get_student_by_id(db: Session = SessionLocal(), id: int = None):
+        result = db.query(Student).filter(Student.id == id).first()
+        db.close()
+        return result

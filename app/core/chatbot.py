@@ -12,7 +12,7 @@ class Bot:
     # is_waiting: int  # 1 for being waiting user's answer
     # next_function: Optional[Callable] = Field(default=None)
     # data: Optional[dict] = Field(default=None)
-    def __init__(self, id, main_status, inner_status, resp, next_function=None, data=dict()):
+    def __init__(self, id, main_status: StatusEnum, inner_status=None, resp=None, next_function=None, data=dict()):
         self.id = id
         self.main_status = main_status
         self.inner_status = inner_status
@@ -32,5 +32,6 @@ class Bot:
     def send(self):
         self.resp.send()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     Bot("fasfa", main_status="StatusEnum.CREATE", inner_status="InnerStatus.BEGIN", resp="TextResponse("")")
