@@ -26,3 +26,8 @@ def recommend(studentId):
 def talk_english_learning_topic(userMsg):
     # dummy function
     ...
+
+
+def introduce_function(userMsg):
+    # dummy function
+    ...

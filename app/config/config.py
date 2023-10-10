@@ -96,7 +96,23 @@ FUNCTIONS = [
                 },
             },
         },
-        "description": "this function allows students to communicate with our advanced AI in english learning topic."
+        "description": "This function allow student to experience communication with our advanced AI, " +
+                       "especially in english learning topic"
 
-    }
+    },
+
 ]
+FUNCTIONS_WITH_INTRO = FUNCTIONS + [{
+    "id": 6,
+    "name": "introduce_function",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "userMsg": {
+                "type": "string",
+            },
+        },
+    },
+    "description": "This function will introduce all functions of the system"
+
+}]
