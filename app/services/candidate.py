@@ -1,11 +1,10 @@
 from app.services import quiz_service as quiz
 from app.util.responses import TextResponse
+from app.models.message import Message
 
+def start_quiz(user_msg:Message ):
 
-def start_quiz(studentId):
-    print("from candidate.")
-    print(studentId)
-    return quiz.start_quiz(studentId)
+    return quiz.start_quiz(user_msg)
 
 
 def start_role_play(studentId):

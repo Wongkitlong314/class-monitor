@@ -3,13 +3,12 @@ from app.core.filter import *
 from app.config.config import FUNCTIONS
 from app.dao.user_mapper import UserDAO
 from typing import Callable
-from app.services.candidate import *
 from logging import getLogger
 from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
+from app.services.quiz_service import quiz_exit, start_quiz
 
 logger = getLogger('app')
-from app.models.do import User
 from app.services import user_service
 from app.config.variables import session
 
@@ -30,10 +29,19 @@ def dispatch(user_msg: Message):
             return user_service.create_user(user_msg)
         else:
             # first start of the server
-            bot = Bot(user_no, StatusEnum.BEGIN.value)
+            bot = Bot(user_no, StatusEnum.BEGIN)
             session[user_no] = bot
 
     status = bot.main_status
+    if text == "/exit":
+        # return to begin stage and execute exit functions of each current status
+        if status == StatusEnum.QUIZ:
+            quiz_exit(user_msg)
+            bot.main_status = StatusEnum.BEGIN
+            return TextResponse("You've returned to the menu.")
+        elif status == StatusEnum.BEGIN:
+            return TextResponse("You already in the menu.")
+
     if status != StatusEnum.BEGIN:
         # in other process
         # execute cont. function here
