@@ -5,9 +5,11 @@ from app.core.GPT_stored_message import get_completion
 from app.util.responses import TextResponse
 from app.config.variables import session
 
+
 # 退出role_play，删掉聊天记录，提示用户role-play结束
 def exit_role_play(user_msg):
     user_bot = session[user_msg.fromNo]
+    print(user_bot)
     del user_bot.data['role_play_message']
     return TextResponse('Role-playing ends. Thank you!')
 
@@ -32,6 +34,7 @@ def start_role_play(user_msg):
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['role_play_msg'] = messages
+        print(messages)
         return TextResponse(chat_response)
 
     else:
@@ -53,6 +56,7 @@ def start_role_play(user_msg):
         user_bot.data['role_play_msg'] = messages
 
         # 返回chatgpt对话：string
+        print(messages)
         return TextResponse(chat_response)
 
 if __name__ == "__main__":
