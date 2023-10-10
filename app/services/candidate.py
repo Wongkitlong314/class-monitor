@@ -2,8 +2,9 @@ from app.services import quiz_service as quiz
 from app.util.responses import TextResponse
 
 
-def start_quiz(studentId: int):
-
+def start_quiz(studentId):
+    print("from candidate.")
+    print(studentId)
     return quiz.start_quiz(studentId)
 
 

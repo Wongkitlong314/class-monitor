@@ -23,13 +23,12 @@ def start_quiz(msg: Message):
                               ["Ok", "/exit"])
     elif bot.inner_status == InnerStatus.DOING:
         # doing quiz. iterate the questions.
-        quiz = bot.data.get(data_key, form_quiz(2, 3, 1))
-        resp = quiz.get_question
+        quiz = bot.data.get(data_key, form_quiz(1, 1, 1))
+        resp = quiz.get_question()
         if resp:
             return resp
 
     return TextResponse("function developing, but at least you finished the quiz")
-
 
 
 def form_quiz(easy: int, medium: int, hard: int) -> UserQuizStatus:
@@ -39,9 +38,9 @@ def form_quiz(easy: int, medium: int, hard: int) -> UserQuizStatus:
     medium_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.MEDIUM)
     hard_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.HARD)
 
-    easy_question = random.sample(easy_question, easy)
-    medium_question = random.sample(medium_question, medium)
-    hard_question = random.sample(hard_question, hard)
+    easy_question = random.sample(easy_question, min(easy, len(easy_question)))
+    medium_question = random.sample(medium_question, min(medium, len(medium_question)))
+    hard_question = random.sample(hard_question, min(hard, len(hard_question)))
     questions = easy_question + medium_question + hard_question
     random.shuffle(questions)
 

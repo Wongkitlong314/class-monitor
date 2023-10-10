@@ -13,11 +13,11 @@ from app.models.do import User
 from app.services import user_service
 from app.config.variables import session
 
+
 def dispatch(user_msg: Message):
     text = user_msg.text
     user_no = user_msg.fromNo
     logger.debug("user_no={}".format(user_no))
-
 
     bot = session.get(user_no, None)
     if not bot:
@@ -34,7 +34,7 @@ def dispatch(user_msg: Message):
             session[user_no] = bot
 
     status = bot.main_status
-    if status!= StatusEnum.BEGIN:
+    if status != StatusEnum.BEGIN:
         # in other process
         # execute cont. function here
         if status == StatusEnum.QUIZ:
@@ -44,9 +44,9 @@ def dispatch(user_msg: Message):
 
     # we got a function from function list
     if match(function, "start_quiz"):
-        status = StatusEnum.QUIZ
+        bot.main_status = StatusEnum.QUIZ
 
-        return function(user.id)
+        return function(user_msg)
     elif match(function, "start_role_play"):
         ...
     elif match(function, "start_writing"):
