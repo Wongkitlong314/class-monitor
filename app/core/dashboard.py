@@ -1,4 +1,7 @@
-from langchain import SQLDatabaseChain
+#%%
+import sys
+sys.path.append("/Users/chenyuxin/Documents/Class-Monitor")
+from langchain_experimental.sql import SQLDatabaseChain
 from langchain.agents import AgentType, create_sql_agent
 from langchain.sql_database import SQLDatabase
 from langchain.agents.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
@@ -17,7 +20,7 @@ os.environ["OPENAI_CHAT_MODEL"]="gpt-3.5-turbo-16k-0613" # Use name of deploymen
 
 llm = ChatOpenAI(model=os.getenv("OPENAI_CHAT_MODEL"),
                       temperature=0)
-
+#%%
 db = SQLDatabase(engine)
 from langchain.prompts.chat import ChatPromptTemplate
 sql_toolkit = SQLDatabaseToolkit(db=db, llm=llm, handle_parsing_errors="Check your output and make sure it conforms!",  return_intermediate_steps=True)
@@ -42,8 +45,9 @@ Thought: I now know the final answer
 Final Answer: the final answer to the original input question""",
 )
 message = [{"role":"system", "content":"You are a helpful AI assistant expert in querying SQL Database to find answers to user's question about Students, Teachers and Homeworks."},{"role":"user", "content":"How many practices did my students do in the last year?\n ai: "}]
-db_chain = SQLDatabaseChain.from_llm(llm, db, prompt=message, verbose=True, use_query_checker=True, return_intermediate_steps=True)
-result = db_chain("How many employees are there in the foobar table?")
+db_chain = SQLDatabaseChain.from_llm(llm, db,  verbose=True, use_query_checker=True, return_intermediate_steps=True)
+result = db_chain("How many practices did my students do in the last year?")
 print(result["intermediate_steps"])
 # res = sqldb_agent.run(message)
 # print(res)
+# %%
