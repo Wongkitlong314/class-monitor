@@ -5,12 +5,13 @@ from app.dao.user_mapper import UserDAO
 from typing import Callable
 from app.services.candidate import *
 from logging import getLogger
+from app.core.chatbot import Bot
+from app.enums.status_enum import StatusEnum
 
 logger = getLogger('app')
 from app.models.do import User
 from app.services import user_service
-
-
+from app.config.variables import session
 
 
 def dispatch(user_msg: Message):
@@ -26,8 +27,12 @@ def dispatch(user_msg: Message):
         return user_service.create_user(user_msg)
 
         ...
+    bot = session.get(user_no, None)
+    if not bot:
+        bot = Bot(user_no, StatusEnum.BEGIN.value)
+        session[user_no] = bot
 
-    status = user.status
+    status = bot.main_status
     function = dispatcher(FUNCTIONS, text)
 
     # we got a function from function list
@@ -43,4 +48,3 @@ def dispatch(user_msg: Message):
 
 def match(function: Callable, name: str):
     return function.__name__ == name
-

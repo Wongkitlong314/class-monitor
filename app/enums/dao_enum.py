@@ -15,6 +15,11 @@ class EducationLevel(Enum):
     s1_3 = "Secondary 1- 3"
     s4_6 = "Secondary 4 - 6"
     u = "Above"
+class QuestionDifficulty(Enum):
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
 
 if __name__ == "__main__":
     print(Role.teacher)
+
