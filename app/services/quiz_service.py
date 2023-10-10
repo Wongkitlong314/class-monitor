@@ -23,16 +23,19 @@ def start_quiz(msg: Message):
                               ["Ok", "/exit"])
     elif bot.inner_status == InnerStatus.DOING:
         # doing quiz. iterate the questions.
-        quiz = bot.data.get(data_key, form_quiz(3))
+        if data_key not in bot.data:
+            bot.data[data_key] = form_quiz(3)
+        quiz = bot.data[data_key]
         resps = []
         pre_ans = msg.text
-        if quiz.cur > -1:
+        if quiz.cur > -1 :
             cur_question = quiz.get_cur_question()
             cur_difficulty = cur_question.difficulty
             if quiz.check(pre_ans):
                 # did correct
                 if cur_difficulty == QuestionDifficulty.HARD:
                     resps.append(TextResponse("You did right!"))
+                    quiz.add(QuestionDifficulty.HARD)
                 else:
                     if cur_difficulty == QuestionDifficulty.EASY:
 
@@ -53,11 +56,15 @@ def start_quiz(msg: Message):
                         quiz.add(QuestionDifficulty.MEDIUM)
                     else:
                         quiz.add(QuestionDifficulty.EASY)
+                else:
+                    quiz.add(QuestionDifficulty.EASY)
                 resps.append(TextResponse("Let's do something easier!"))
 
         resp = quiz.get_question()
-        if resp:
-            resps.append(resp)
+        resps.append(resp)
+        print(bot.data.keys())
+        if resps:
+            print(resps)
             return resps
 
     return TextResponse("function developing, but at least you finished the quiz")
@@ -66,7 +73,7 @@ def start_quiz(msg: Message):
 def form_quiz(n) -> UserQuizStatus:
     # randomly form a quiz
     # it is not the most efficient way. will be changed in future
-
+    print("create a quiz")
     easy_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.EASY)
     medium_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.MEDIUM)
     hard_question = QuestionDao.get_by_difficulty(level=QuestionDifficulty.HARD)

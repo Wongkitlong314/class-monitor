@@ -31,6 +31,7 @@ def dispatch(user_msg: Message):
         else:
             # first start of the server
             bot = Bot(user_no, StatusEnum.BEGIN)
+            print("create a bot")
             session[user_no] = bot
 
     status = bot.main_status

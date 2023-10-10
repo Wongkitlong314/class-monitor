@@ -27,7 +27,7 @@ class UserQuizStatus:
         self.cur += 1
         if self.cur > self.cap - 1:
             return None
-
+        print(self.cur,self.questions)
         question = self.questions[self.cur]
         resp = ButtonResponse(question.title + "[{}]".format(question.difficulty.value),
                               [button for button in question.choices])
@@ -44,9 +44,11 @@ class UserQuizStatus:
             return None
         q = self.questions[self.cur]
 
-        return q.choices.index(ans) == q.answer
+        return (ans in q.choices) and (q.choices.index(ans) == q.answer)
 
     def add(self, level: QuestionDifficulty):
+        if self.size + 1 > self.cap:
+            raise Exception("You cannot add more question")
         self.size += 1
         if level == QuestionDifficulty.EASY:
             self.questions.append(self.reserve_easy.pop())
