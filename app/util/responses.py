@@ -2,17 +2,19 @@ import httpx
 from app.config.config import ACCESSTOKEN, BASEURL, RECIPIENT, BUSSINESS
 import asyncio
 import json
+import requests
+
 
 class BasicResponse:
     def __init__(self, text=None, data=None, recipient=None, **kwargs):
         self.text = text if text else ""
         self.data = {
-                "platform" : "WA",
-                "from" : BUSSINESS,
-                "to" : RECIPIENT,
-                "type" : "text",
-                "text" : self.text
-            }
+            "platform": "WA",
+            "from": BUSSINESS,
+            "to": RECIPIENT,
+            "type": "text",
+            "text": self.text
+        }
         if recipient:
             self.data["to"] = recipient
         if data:
@@ -28,10 +30,15 @@ class BasicResponse:
         async with httpx.AsyncClient() as client:
             response = await client.post(BASEURL + self.endpoint, data=data, headers=self.headers)
             return response.text
-    
+
+    def sync_send(self):
+        data = json.dumps(self.data)
+        res = requests.post(url=BASEURL + self.endpoint, data=data, headers=self.headers)
+        return res
+
     def change_recipient(self, recipient):
         self.data["to"] = recipient
-    
+
     def set_text(self, text):
         self.data["text"] = text
         self.text = text
@@ -84,25 +91,30 @@ class BasicMediaResponse(BasicResponse):
             response = httpx.get(mediaURL)
             self.files = {'file': (mediaURL.split('/')[-1], response.content, 'application/octet-stream')}
         else:
-            self.files=[('file', (mediaURL.split('/')[-1], open(mediaURL,'rb'), 'application/octet-stream'))]
+            self.files = [('file', (mediaURL.split('/')[-1], open(mediaURL, 'rb'), 'application/octet-stream'))]
         self.headers['Content-Type'] = 'multipart/form-data; boundary=----'
 
     async def send(self):
         async with httpx.AsyncClient() as client:
-            response = await client.post(BASEURL + self.endpoint, data=self.data, headers=self.headers, files=self.files)
+            response = await client.post(BASEURL + self.endpoint, data=self.data, headers=self.headers,
+                                         files=self.files)
             return response.text
 
+
 class ImageResponse(BasicMediaResponse):
-    def __init__(self, image_url,**kwargs):
+    def __init__(self, image_url, **kwargs):
         super().__init__(image_url, "image", **kwargs)
+
 
 class VideoResponse(BasicMediaResponse):
     def __init__(self, video_url, **kwargs):
         super().__init__(video_url, "video", **kwargs)
 
+
 class AudioResponse(BasicMediaResponse):
     def __init__(self, audio_url, **kwargs):
         super().__init__(audio_url, "audio", **kwargs)
+
 
 class DocumentResponse(BasicMediaResponse):
     def __init__(self, document_url, **kwargs):
