@@ -13,7 +13,7 @@ class Bot:
 # 退出role_play，删掉聊天记录，提示用户role-play结束
 def exit_role_play(user_msg):
     user_bot = session[user_msg.fromNo]
-    del user_bot.data['role_play_message']
+    del user_bot.data['role_play_msg']
     return TextResponse('Role-playing ends. Thank you!')
 
 # 传入用户消息类，用户bot，用户id（电话号码）
