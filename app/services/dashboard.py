@@ -6,8 +6,6 @@ from sqlalchemy import create_engine
 from app.config.database import engine
 from app.config.config import DASHBOARD_MODEL, OPENAI_API_KEY
 import os
-from dotenv import load_dotenv
-
 # os.environ["OPENAI_API_TYPE"]="open_ai"
 # os.environ["OPENAI_API_VERSION"]="2020-11-07"
 # os.environ["OPENAI_API_BASE"]="https://api.openai.com/v1" # Your Azure OpenAI resource endpoint
