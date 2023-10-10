@@ -12,7 +12,6 @@ logger = getLogger('app')
 from app.models.do import User
 from app.services import user_service
 from app.config.variables import session
-from app.services.quiz_service import cont_quiz
 
 def dispatch(user_msg: Message):
     text = user_msg.text
@@ -39,7 +38,7 @@ def dispatch(user_msg: Message):
         # in other process
         # execute cont. function here
         if status == StatusEnum.QUIZ:
-            return cont_quiz(user_msg)
+            return start_quiz(user_msg)
 
     function = dispatcher(FUNCTIONS, text)
 
