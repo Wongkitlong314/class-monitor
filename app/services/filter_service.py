@@ -50,7 +50,7 @@ def dispatch(user_msg: Message):
         if status == StatusEnum.QUIZ:
             return start_quiz(user_msg)
         elif status == StatusEnum.ROLE_PLAYING:
-            return role_play(user_msg)
+            return start_role_play(user_msg)
 
     function = dispatcher(FUNCTIONS, text)
 
