@@ -28,7 +28,7 @@ def start_quiz(msg: Message):
         quiz = bot.data[data_key]
         resps = []
         pre_ans = msg.text
-        if quiz.cur > -1 :
+        if quiz.cur > -1:
             cur_question = quiz.get_cur_question()
             cur_difficulty = cur_question.difficulty
             if quiz.check(pre_ans):
@@ -46,19 +46,23 @@ def start_quiz(msg: Message):
                                               "Let's do more difficult question"))
                 quiz.score += 1
             else:
-                resps.append(TextResponse("Sorry you did wrongly" +
-                                          "The correct answer" +
-                                          " should be {}".format(cur_question.choices[cur_question.answer]) +
-                                          "\nThe explanation is:\n{}".format(cur_question.explanation)))
-                if not cur_difficulty == QuestionDifficulty.EASY:
 
+                if not cur_difficulty == QuestionDifficulty.EASY:
+                    resps.append(TextResponse("Sorry you did wrongly" +
+                                              "The correct answer" +
+                                              " should be {}".format(cur_question.choices[cur_question.answer]) +
+                                              "\nThe explanation is:\n{}".format(cur_question.explanation)+
+                                              "Let's do something easier!"))
                     if cur_difficulty == QuestionDifficulty.HARD:
                         quiz.add(QuestionDifficulty.MEDIUM)
                     else:
                         quiz.add(QuestionDifficulty.EASY)
                 else:
+                    resps.append(TextResponse("Sorry you did wrongly" +
+                                              "The correct answer" +
+                                              " should be {}".format(cur_question.choices[cur_question.answer]) +
+                                              "\nThe explanation is:\n{}".format(cur_question.explanation)))
                     quiz.add(QuestionDifficulty.EASY)
-                resps.append(TextResponse("Let's do something easier!"))
 
         resp = quiz.get_question()
         resps.append(resp)
