@@ -6,7 +6,8 @@ from app.util.responses import TextResponse
 from app.config.variables import session
 
 # 退出role_play，删掉聊天记录，提示用户role-play结束
-def exit_role_play(user_bot):
+def exit_role_play(user_msg):
+    user_bot = session[user_msg.fromNo]
     del user_bot.data['role_play_message']
     return TextResponse('Role-playing ends. Thank you!')
 
