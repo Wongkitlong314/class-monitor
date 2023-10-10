@@ -29,7 +29,10 @@ def start_writing(user_msg):
     writing_task_description = prompt.PromptConstructor('app/prompt_templates/writing_prompt.txt').get()
     stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).role_id
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
-    stu_edu_level = stu.education_level.value
+    try:
+        stu_edu_level = stu.education_level.value
+    except:
+        stu_edu_level = 'Secondary 4 - 6'
     if 'writing_msg' not in user_bot.data:
         messages = [
             {"role": "system", "content": writing_task_description},

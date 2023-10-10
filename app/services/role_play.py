@@ -30,7 +30,10 @@ def start_role_play(user_msg):
     stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).role_id
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
     stu_interest = ', '.join(stu.interest)
-    stu_edu_level = stu.education_level.value
+    try:
+        stu_edu_level = stu.education_level.value
+    except:
+        stu_edu_level = 'Secondary 4 - 6'
     if 'role_play_msg' not in user_bot.data:
         messages = [
             {"role": "system", "content": speaking_task_description},
@@ -68,10 +71,14 @@ if __name__ == "__main__":
     # stu_interest =', '.join(stu.interest)
     # stu_edu_level = stu.education_level.value
     # print(status_enum.StatusEnum.ROLE_PLAYING.value)
-    stu_id = user_mapper.UserDAO.get_user_by_phone(phone='85253640135').role_id
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone='6588298542').role_id
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
     stu_interest = ', '.join(stu.interest)
-    stu_edu_level = stu.education_level.value
+    try:
+        stu_edu_level = stu.education_level.value
+    except:
+        stu_edu_level = 'Secondary 4 - 6'
+
     speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
     messages = [
         {"role": "system", "content": speaking_task_description},
