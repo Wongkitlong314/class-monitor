@@ -19,7 +19,7 @@ def start_role_play(user_msg):
     user_phone = user_msg.fromNo
     user_msg_txt = user_msg.text
     speaking_task_description = prompt.PromptConstructor('app/prompt_templates/role_play_prompt.txt').get()
-    stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).role.id
+    stu_id = user_mapper.UserDAO.get_user_by_phone(phone=user_phone).role_id
     stu = student_mapper.StudentDAO.get_student_by_id(id=stu_id)
     stu_interest = ', '.join(stu.interest)
     stu_edu_level = stu.education_level.value
