@@ -4,7 +4,6 @@ from app.util import prompt
 from app.core.GPT_stored_message import get_completion
 from app.util.responses import TextResponse
 from app.config.variables import session
-
 global session
 
 # 退出role_play，删掉聊天记录，提示用户role-play结束
@@ -71,7 +70,7 @@ if __name__ == "__main__":
     stu_edu_level = stu.education_level.value
     print(stu_interest)
     print(stu_edu_level)
-    speaking_task_description = prompt.PromptConstructor('app/prompt_templates/role_play_prompt.txt').get()
+    speaking_task_description = prompt.PromptConstructor('../prompt_templates/role_play_prompt.txt').get()
     messages = [
         {"role": "system", "content": speaking_task_description},
         {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
