@@ -18,13 +18,19 @@ def echo(message: Union[Message, MessageStatus]):
 async def root(message: Union[Message, MessageStatus]):
     if isinstance(message, Message):
         response = service.dispatch(message)
-        # change return value to a list
-        # so it can send multiple questions
-        response.change_recipient(message.fromNo)
-        logger.debug(response.data)
-        logger.debug(response.text)
-        # use await or not sent
-        await response.send()
+        if isinstance(response,list):
+            for r in response:
+                r.change_recipient(message.fromNo)
+                logger.debug(r.data)
+                logger.debug(r.text)
+                # use await or not sent
+                await r.send()
+        else:
+            response.change_recipient(message.fromNo)
+            logger.debug(response.data)
+            logger.debug(response.text)
+            # use await or not sent
+            await response.send()
     return 0
 
 @router.post("/call")
