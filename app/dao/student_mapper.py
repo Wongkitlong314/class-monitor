@@ -23,3 +23,9 @@ class StudentDAO:
     @staticmethod
     def insert_student(db: Session = SessionLocal(), studentDO: Student = None):
         db.add(studentDO)
+
+    @staticmethod
+    def get_student_by_id(db: Session = SessionLocal(), id: int = None):
+        result = db.query(Student).filter(Student.id == id).first()
+        db.close()
+        return result
