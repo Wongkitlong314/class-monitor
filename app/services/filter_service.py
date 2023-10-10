@@ -8,7 +8,7 @@ from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
 from app.services.quiz_service import quiz_exit, start_quiz
 from app.services.role_play import exit_role_play
-
+from app.core import GPT_request
 logger = getLogger('app')
 from app.services import user_service
 from app.config.variables import session
@@ -66,6 +66,12 @@ def dispatch(user_msg: Message):
         return function(user_msg)
     elif match(function, "start_writing"):
         ...
+    elif match(function,"talk_english_learning_topic"):
+        sys_pmt = "You are a english learning assistant and a expert in education. " \
+                  "Given student's question or topic about english learning, you will give kind reply."
+        prompt = "Student message: " + user_msg.text
+        response = GPT_request.get_completion(prompt=prompt, sys_prompt=sys_pmt)
+        return TextResponse(response)
     return TextResponse(function.__name__)
 
 
