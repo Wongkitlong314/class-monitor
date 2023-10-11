@@ -1,10 +1,10 @@
 import openai
 import time
+import json
 openai.api_key = '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'
 
-def get_completion(messages, model="gpt-3.5-turbo-0613",temperature=0):
+def get_completion(messages, model="gpt-3.5-turbo-0613", temperature=0):
     response = ''
-    except_waiting_time = 0.1
     fun = [
     {
         "name": "grading_student_writing",
@@ -37,6 +37,7 @@ def get_completion(messages, model="gpt-3.5-turbo-0613",temperature=0):
         "required": ["comment"]
     }
 ]
+    except_waiting_time = 0.1
     while response == '':
         try:
             response = openai.ChatCompletion.create(
@@ -51,4 +52,7 @@ def get_completion(messages, model="gpt-3.5-turbo-0613",temperature=0):
             time.sleep(except_waiting_time)
             if except_waiting_time < 2:
                 except_waiting_time *= 2
+    if response.choices[0].message.get("function_call"):
+        chat_response = json.loads(response.choices[0].message['function_call']['arguments'])['comment']
+        return chat_response
     return response.choices[0].message["content"]
