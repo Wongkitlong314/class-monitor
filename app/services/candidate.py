@@ -1,4 +1,4 @@
-from app.services import quiz_service as quiz, role_play
+from app.services import quiz_service as quiz, role_play,writing
 from app.util.responses import TextResponse
 from app.models.message import Message
 
@@ -11,15 +11,15 @@ def start_role_play(user_msg: Message):
     return role_play.start_role_play(user_msg)
 
 
-def start_writing(studentId):
-    return TextResponse("writing mode")
+def start_writing(user_msg: Message):
+    return writing.start_writing(user_msg)
 
 
-def dashboard(studentId):
+def dashboard(user_msg: Message):
     return TextResponse("dashboard")
 
 
-def recommend(studentId):
+def recommend(user_msg: Message):
     return TextResponse("recommend")
 
 
