@@ -32,11 +32,11 @@ def get_completion(prompt, sys_prompt, model="gpt-3.5-turbo", temperature=0.1):
     return response.choices[0].message["content"]
 
 
-system_prompt = """
-Act as yourself.
-"""
-user_prompt = """
-Hi, it's a nice day!
-"""
-response = get_completion(prompt=user_prompt, sys_prompt=system_prompt, model="gpt-3.5-turbo", temperature=0.2)
-print(response)
+# system_prompt = """
+# Act as yourself.
+# """
+# user_prompt = """
+# Hi, it's a nice day!
+# """
+# response = get_completion(prompt=user_prompt, sys_prompt=system_prompt, model="gpt-3.5-turbo", temperature=0.2)
+# print(response)
