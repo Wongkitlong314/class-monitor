@@ -65,7 +65,7 @@ def dispatch(user_msg: Message):
         prefix = ["Sorry, let's talk some english related topic. The following is my function list:",
                   "Let's only talk learning topic. Here is my function list: ",
                   "Sorry, let's do the following:"]
-        list_function(prefix)
+        return list_function(prefix)
 
     # we got a function from function list
     if match(function, "start_quiz"):
