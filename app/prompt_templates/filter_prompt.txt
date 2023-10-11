@@ -1,0 +1,44 @@
+you have to help us to choose the best function from the "function list"(json format) to call to handle "user message".
+please "only" return function id after you make your decision
+DO NOT say anything else
+ONLY RETURN FUNCTION ID separated by space
+
+user message:$
+function list:
+{
+    "functions":[
+        {
+            "id":0,
+            "functionName": "start_quiz",
+            "params":["student_id","quiz_id"],
+            "functionDescription":"This is a functions that starts a quiz session for student with the student id in params"
+        },
+        {
+            "id":1,
+            "functionName": "start_role_play",
+            "params":["student_id"],
+            "functionDescription":"This is a functions that starts a role-play session for student"
+        },
+        {
+            "id":2,
+            "functionName": "start_writing",
+            "params":["student_id","quiz_id"],
+            "functionDescription":"This is a functions that allows student to write with ai"
+
+        },
+        {
+            "id":3,
+            "functionName": "dashboard",
+            "params":["userId"],
+            "functionDescription":"this function allows the user to check the data in dashboard"
+
+        },
+        {
+            "id":4,
+            "functionName": "recommend",
+            "params":["studentId"],
+            "functionDescription":"this function makes the system to recommend studying material for student, eg news, readings, listenings"
+
+        }
+    ]
+}
