@@ -3,7 +3,7 @@ from langchain.agents import AgentType, create_sql_agent
 from langchain.sql_database import SQLDatabase
 from langchain.agents.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain.chat_models import ChatOpenAI
-from app.util.responses import ImageResponse, TextResponse
+from app.util.responses import ImageResponse, TextResponse, ButtonResponse
 from quickchart import QuickChart
 from app.config.database import SessionLocal, engine
 import os
@@ -22,6 +22,9 @@ from langchain.tools.json.tool import JsonSpec
 import ast
 import asyncio
 from decimal import Decimal
+from app.config.variables import session as cache
+from enum import Enum
+from app.enums.status_enum import StatusEnum
 
 logger = getLogger("app")
 
@@ -62,6 +65,7 @@ db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, use_query_checker=Tr
 DEFAULT_WIDTH = 500
 DEFAULT_HEIGHT = 300
 DEFAULT_RATIO = 2.0
+dashboard_key = "dashboard_key"
 
 
 class default_chart(QuickChart):
@@ -119,9 +123,31 @@ def dispatcher(functions, prompt):
     return None
 
 
-def dashboard(message):
+def dashboard(message: Message):
+    bot = cache[message.fromNo]
+    status = InnerStatus.AFTER
+    if bot.inner_status is None or bot.inner_status != InnerStatus.AFTER:
+        status = InnerStatus.FIRST
+    if status == InnerStatus.FIRST:
+        bot.inner_status = InnerStatus.AFTER
+        return ButtonResponse(
+            "Welcome to dashboard 🎉, you can query in natural languages in dashboard, try some examples: " + \
+            "\n\nA. How many practices and daily reads did Emma Johnson do in the last year" + \
+            "\nB. What kinds of ability that John Smith have? " + \
+            "\nC. How many quizzed and daily reads did Emma Johnson do in the last year",
+            ["A", "B", "C"])
+    if message.text == "A":
+        message.text = "How many practices and daily reads did Emma Johnson do in the last year"
+    elif message.text == "B":
+        message.text = "What kinds of ability that John Smith have?"
+    elif message.text == "C":
+        message.text = "Show me the total sum of both number of quizzed and num ber of daily reads that Emma Johnson do in the last year to draw a pie chart."
+    # else:
+    #     bot.inner_status = InnerStatus.FIRST
+    #     return TextResponse("You did something wrong")
     openai.api_key = "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"
-    result = db_chain(message.text + " return in list")
+    message.text = message.text + " return in list"
+    result = db_chain(message.text)
     sql = result["intermediate_steps"][2]['sql_cmd']
     prompt = get_completion(
         prompt=message.text + ', what kind of graph should I use to show the data? choose from [bar chart, line chart, pie chart, radar chart]. Only respond with one type of chart, do not include any explanation.',
@@ -134,61 +160,86 @@ def dashboard(message):
     dict_name = sql.split("FROM")[0].split("SELECT")[1].split(",")
     new_dict_name = []
     target_dict = {}
-    for index, key in enumerate(dict_name):
-        if "AS" in key:
-            key = key.split("AS")[1]
-        key = key.split(".")[-1]
-        key = key.replace("\n", " ")
-        key = key.strip()
-        new_dict_name.append(key)
-        target_dict[key] = []
-        for item in sql_result:
-            target_dict[key].append(item[index])
-    print(target_dict)
-    target_chart_config = dispatcher(CHARTS, prompt)
-    chart = default_chart()
-    result = decimal_to_float(result)
-    if target_chart_config['type'] == "bar" or target_chart_config['type'] == "line":
-        json_spec = JsonSpec(dict_=target_dict, max_value_length=4000)
-        json_toolkit = JsonToolkit(spec=json_spec)
-        print(json_toolkit)
-        json_agent_executor = create_json_agent(
-            llm=OpenAI(temperature=0), toolkit=json_toolkit, verbose=True
-        )
-        result = json_agent_executor.run(
-            "Output all the time in the form of list.",
-        )
-        result = ast.literal_eval(result)
-        print(dict_name)
-        if not isinstance(result[0], int):
-            result_str = [datetime(*item).strftime('%Y-%m-%d') for item in result]
+    try:
+        for index, key in enumerate(dict_name):
+            if "AS" in key:
+                key = key.split("AS")[1]
+            key = key.split(".")[-1]
+            key = key.replace("\n", " ")
+            key = key.strip()
+            new_dict_name.append(key)
+            target_dict[key] = []
+            for item in sql_result:
+                target_dict[key].append(item[index])
+        print(target_dict)
+        target_chart_config = dispatcher(CHARTS, prompt)
+        chart = default_chart()
+        result = decimal_to_float(result)
+        if target_chart_config['type'] == "bar" or target_chart_config['type'] == "line" or target_chart_config[
+            'type'] == "scatter":
+            json_spec = JsonSpec(dict_=target_dict, max_value_length=4000)
+            json_toolkit = JsonToolkit(spec=json_spec)
+            print(json_toolkit)
+            json_agent_executor = create_json_agent(
+                llm=OpenAI(temperature=0), toolkit=json_toolkit, verbose=True
+            )
+            result = json_agent_executor.run(
+                "Output all the time in the form of list.",
+            )
+            result = ast.literal_eval(result)
+            print(dict_name)
+            if not isinstance(result[0], int):
+                result_str = [datetime(*item).strftime('%Y-%m-%d') for item in result]
+                target_chart_config["data"]["labels"] = result_str
+                for key in target_dict.keys():
+                    target_dict[key] = decimal_to_float(target_dict[key])
+                    if not target_dict[key][0] == datetime(*result[0]):
+                        target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
+            else:
+                target_chart_config["data"]["labels"] = result
+                for key in target_dict.keys():
+                    target_dict[key] = decimal_to_float(target_dict[key])
+                    if not target_dict[key][0] == result[0]:
+                        target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
+        elif target_chart_config['type'] == "pie":
+            result_str = new_dict_name
             target_chart_config["data"]["labels"] = result_str
+            target_chart_config["data"]["datasets"].append({"data": []})
             for key in target_dict.keys():
                 target_dict[key] = decimal_to_float(target_dict[key])
-                if not target_dict[key][0] == datetime(*result[0]):
-                    target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
-        else:
-            target_chart_config["data"]["labels"] = result
+                target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
+        elif target_chart_config['type'] == "radar":
+            result_str = new_dict_name
+            target_chart_config["data"]["labels"] = result_str
+            target_chart_config["data"]["datasets"].append({"data": []})
             for key in target_dict.keys():
                 target_dict[key] = decimal_to_float(target_dict[key])
-                if not target_dict[key][0] == result[0]:
-                    target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
-    elif target_chart_config['type'] == "pie":
-        result_str = new_dict_name
-        target_chart_config["data"]["labels"] = result_str
-        target_chart_config["data"]["datasets"].append({"data": []})
-        for key in target_dict.keys():
-            target_dict[key] = decimal_to_float(target_dict[key])
-            target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
-    logger.debug(target_chart_config)
-    chart.config = target_chart_config
-    print(target_chart_config)
-    print(chart.get_url())
-    return ImageResponse(chart.get_url() + '.png', text=summary(message.text, sql, target_dict))
+                target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
+                target_chart_config["data"]["datasets"][0]["label"] = "Abilities"
+        logger.debug(target_chart_config)
+        chart.config = target_chart_config
+        print(target_chart_config)
+        print(chart.get_url())
+        return ImageResponse(chart.get_url() + '.png', text=summary(message.text, sql, target_dict))
+    except Exception as e:
+        print(e)
+        return TextResponse(
+            summary(message.text + "Sorry, I do not understand your question, please try again.", sql, target_dict))
+
+
+def dashboard_exit(message):
+    bot = cache[message.fromNo]
+    bot.main_status = StatusEnum.BEGIN
+    bot.inner_status = None
+
+
+class InnerStatus(Enum):
+    FIRST = 1
+    AFTER = 2
 
 
 if __name__ == "__main__":
     # message = Message(text="How many practices and daily reads did Emma Johnson do in the last year, return in list")
-    res = dashboard("Count both the daily read number and quiz number of all student learning log to draw a pie chart.")
+    res = dashboard("What kinds of ability that John Smith have?")
     res.change_recipient("6583869990")
     asyncio.run(res.send())
