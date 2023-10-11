@@ -9,82 +9,112 @@ RECIPIENT = "6583869990"
 OPENAI_API_KEY = "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"
 DASHBOARD_MODEL= "gpt3.5-turbo-0613"
 FUNCTIONS = [
-        {
-            "id":0,
-            "name": "start_quiz",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "studentId": {
-                        "type": "number",
-                        # "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    # "quiz_id": {
-                    #     "type": "string",
-                    # },
+    {
+        "id": 0,
+        "name": "start_quiz",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "studentId": {
+                    "type": "number",
+                    # "description": "The city and state, e.g. San Francisco, CA",
+                },
+                # "quiz_id": {
+                #     "type": "string",
+                # },
 
-                    # "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                },
-                # "required": ["location"],
+                # "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
             },
-            "description":"This is a functions that starts a quiz session for student with the student id in params"
+            # "required": ["location"],
         },
-        {
-            "id":1,
-            "name": "start_role_play",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "studentId": {
-                        "type": "string",
-                    },
+        "description": "This is a functions that starts a quiz session for student with the student id in params"
+    },
+    {
+        "id": 1,
+        "name": "start_role_play",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "studentId": {
+                    "type": "string",
                 },
             },
-            "description":"This is a functions that starts a role-play session for student"
         },
-        {
-            "id":2,
-            "name": "start_writing",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "studentId": {
-                        "type": "string",
-                    },
-                    # "quiz_id": {
-                    #     "type": "string",
-                    # },
+        "description": "This is a functions that starts a role-play session for student"
+    },
+    {
+        "id": 2,
+        "name": "start_writing",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "studentId": {
+                    "type": "string",
                 },
+                # "quiz_id": {
+                #     "type": "string",
+                # },
             },
-            "description":"This is a functions that allows student to write with ai"
+        },
+        "description": "This is a functions that allows student to write with ai"
 
-        },
-        {
-            "id":3,
-            "name": "dashboard",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "studentId": {
-                        "type": "string",
-                    },
+    },
+    {
+        "id": 3,
+        "name": "dashboard",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "studentId": {
+                    "type": "string",
                 },
             },
-            "description":"this function allows the user to check the data in dashboard"
-
         },
-        {
-            "id":4,
-            "name": "recommend",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "studentId": {
-                        "type": "string",
-                    },
+        "description": "this function allows the user to check the data in dashboard"
+
+    },
+    {
+        "id": 4,
+        "name": "recommend",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "studentId": {
+                    "type": "string",
                 },
             },
-            "description":"this function makes the system to recommend studying material for student, eg news, readings, listenings"
+        },
+        "description": "this function makes the system to recommend studying material for student, eg news, readings, listenings"
 
-        }
+    },
+    {
+        "id": 5,
+        "name": "talk_english_learning_topic",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "userMsg": {
+                    "type": "string",
+                },
+            },
+        },
+        "description": "This function allow student to experience communication with our advanced AI, " +
+                       "especially in english learning topic"
+
+    },
+
 ]
+FUNCTIONS_WITH_INTRO = FUNCTIONS + [{
+    "id": 6,
+    "name": "introduce_function",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "userMsg": {
+                "type": "string",
+            },
+        },
+    },
+    "description": "This function will introduce all functions of the system"
+
+}]

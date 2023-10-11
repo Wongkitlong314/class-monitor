@@ -4,6 +4,8 @@ from app.services.candidate import *
 import asyncio
 from logging import getLogger
 
+from app.services.candidate import *
+
 logger = getLogger('app')
 
 openai.api_key = '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'
@@ -39,15 +41,22 @@ def dispatcher(functions, prompt):
     if response_message.get("function_call"):
         # Step 3: call the function
         # Note: the JSON response may not always be valid; be sure to handle errors
-        available_functions = {
-            "start_quiz": start_quiz,
-            "start_role_play": start_role_play,
-            "start_writing": start_writing,
-            "dashboard": dashboard,
-            "recommend": recommend,
-        }  # only one function in this example, but you can have multiple
+        # available_functions = {
+        #     "start_quiz": start_quiz,
+        #     "start_role_play": start_role_play,
+        #     "start_writing": start_writing,
+        #     "dashboard": dashboard,
+        #     "recommend": recommend,
+        #     "talk_english_learning_topic": talk_english_learning_topic,
+        #
+        # }  # only one function in this example, but you can have multiple
+        available_functions = {}
+        global_dict = globals()
+        for function in functions:
+            name = function["name"]
+            available_functions[name] = global_dict[name]
         function_name = response_message["function_call"]["name"]
-
+        print(available_functions)
         function_to_call = available_functions[function_name]
         # print(function_to_call)
         # function_args = json.loads(response_message["function_call"]["arguments"])

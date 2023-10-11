@@ -20,7 +20,7 @@ def echo(message: Union[Message, MessageStatus]):
 
 
 @router.post("")
-def root(message: Union[Message, MessageStatus]):
+async def root(message: Union[Message, MessageStatus]):
     if isinstance(message, Message):
         response = service.dispatch(message)
         if isinstance(response, list):
@@ -32,16 +32,17 @@ def root(message: Union[Message, MessageStatus]):
                 logger.debug(r.data)
                 logger.debug(r.text)
                 # use await or not sent
-                time.sleep(1)
-                r.sync_send()
+
+                await r.send()
         else:
             response.change_recipient(message.fromNo)
             logger.debug(response.data)
             logger.debug(response.text)
             # use await or not sent
-            response.sync_send()
+            await response.send()
     return 0
-    
+
+
 @router.post("/call")
 def dispatch(message: Union[Message, MessageStatus]):
     # resp = service.dispatch(message)
