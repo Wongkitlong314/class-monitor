@@ -28,13 +28,15 @@ def start_quiz(msg: Message):
         quiz = bot.data[data_key]
         resps = []
         pre_ans = msg.text
+        resp_text = ""
         if quiz.cur > -1:
             cur_question = quiz.get_cur_question()
             cur_difficulty = cur_question.difficulty
             if quiz.check(pre_ans):
                 # did correct
                 if cur_difficulty == QuestionDifficulty.HARD:
-                    resps.append(TextResponse("You did right!"))
+                    # resps.append(TextResponse("You did right!"))
+                    resp_text = "You did right!"
                     quiz.add(QuestionDifficulty.HARD)
                 else:
                     if cur_difficulty == QuestionDifficulty.EASY:
@@ -42,17 +44,22 @@ def start_quiz(msg: Message):
                         quiz.add(QuestionDifficulty.MEDIUM)
                     else:
                         quiz.add(QuestionDifficulty.HARD)
-                    resps.append(TextResponse("You did right!" +
-                                              "Let's do more difficult question"))
+                    # resps.append(TextResponse("You did right!" +
+                    #                           "Let's do more difficult question"))
+                    resp_text = "You did right!" + "Let's do more difficult question"
                 quiz.score += 1
             else:
 
                 if not cur_difficulty == QuestionDifficulty.EASY:
-                    resps.append(TextResponse("Sorry you did wrongly" +
-                                              "The correct answer" +
-                                              " should be {}".format(cur_question.choices[cur_question.answer]) +
-                                              "\nThe explanation is:\n{}".format(cur_question.explanation)+
-                                              "Let's do something easier!"))
+                    # resps.append(TextResponse("Sorry you did wrongly" +
+                    #                           "The correct answer" +
+                    #                           " should be {}".format(cur_question.choices[cur_question.answer]) +
+                    #                           "\nThe explanation is:\n{}".format(cur_question.explanation) +
+                    #                           "Let's do something easier!"))
+                    resp_text = "Sorry you did wrongly" + "The correct answer" + \
+                                " should be {}".format(cur_question.choices[cur_question.answer]) + \
+                                "\nThe explanation is:\n{}".format(cur_question.explanation) + \
+                                "Let's do something easier!"
                     if cur_difficulty == QuestionDifficulty.HARD:
                         quiz.add(QuestionDifficulty.MEDIUM)
                     else:
@@ -62,17 +69,22 @@ def start_quiz(msg: Message):
                                               "The correct answer" +
                                               " should be {}".format(cur_question.choices[cur_question.answer]) +
                                               "\nThe explanation is:\n{}".format(cur_question.explanation)))
+                    resp_text = "Sorry you did wrongly" + \
+                                "The correct answer" + \
+                                " should be {}".format(cur_question.choices[cur_question.answer]) + \
+                                "\nThe explanation is:\n{}".format(cur_question.explanation)
                     quiz.add(QuestionDifficulty.EASY)
 
         resp = quiz.get_question()
-        resps.append(resp)
+        # resps.append(resp)
+        resp.set_text(resp_text+"\n\n"+resp.text)
 
         if resp:
-            print(resps)
-            return resps
+
+            return resp
         else:
             bot.main_status = StatusEnum.BEGIN
-            return resps[:len(resps)-1]
+            return resps[:len(resps) - 1]
 
     return TextResponse("function developing, but at least you finished the quiz")
 
