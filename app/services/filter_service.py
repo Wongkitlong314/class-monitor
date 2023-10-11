@@ -39,7 +39,7 @@ def dispatch(user_msg: Message):
             session[user_no] = bot
 
     status = bot.main_status
-    if text == "/exit":
+    if text == "/exit" or text == "/quit" or text == "/menu":
         # return to begin stage and execute exit functions of each current status
         if status == StatusEnum.QUIZ:
             quiz_exit(user_msg)
