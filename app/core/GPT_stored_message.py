@@ -11,7 +11,8 @@ def get_completion(messages, model="gpt-3.5-turbo", temperature=0):
                 model=model,
                 messages=messages,
                 temperature=temperature,
-                request_timeout=50
+                request_timeout=50,
+                max_tokens=50
             )
         except Exception as e:
             time.sleep(except_waiting_time)
