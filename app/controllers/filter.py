@@ -6,8 +6,8 @@ from app.services import filter_service as service
 from app.util.responses import TextResponse
 from logging import getLogger
 from typing import Union
-import asyncio
-
+import json
+import time
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ async def root(message: Union[Message, MessageStatus]):
         response = service.dispatch(message)
         if isinstance(response, list):
             print("multiple")
-            print(list(map(lambda x : (x.text,x.data['text']),response)))
+            print(list(map(lambda x: (x.text, x.data['text']), response)))
             for r in response:
                 print("send")
                 r.change_recipient(message.fromNo)
@@ -34,11 +34,13 @@ async def root(message: Union[Message, MessageStatus]):
                 # use await or not sent
 
                 await r.send()
+                time.sleep(0.5)
         else:
             response.change_recipient(message.fromNo)
             logger.debug(response.data)
             logger.debug(response.text)
             # use await or not sent
+            print(json.dumps(response.data))
             await response.send()
     return 0
 
