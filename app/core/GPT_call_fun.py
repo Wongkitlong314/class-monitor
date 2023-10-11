@@ -1,7 +1,7 @@
 import openai
 import time
 import json
-openai.api_key = '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'
+openai.api_key = 'your api key'
 
 def get_completion(messages, model="gpt-3.5-turbo-0613", temperature=0):
     response = ''
