@@ -9,7 +9,7 @@ from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
 from app.services.quiz_service import quiz_exit, start_quiz
 from app.services.role_play import exit_role_play, start_role_play
-from app.services.dashboard import dashboard
+from app.services.dashboard_service import dashboard
 from app.services.writing import start_writing
 from app.core import GPT_request
 import random
