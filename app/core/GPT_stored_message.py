@@ -2,7 +2,7 @@ import openai
 import time
 openai.api_key = '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'
 
-def get_completion(messages, model="gpt-3.5-turbo", max_tokens=50,temperature=0):
+def get_completion(messages, model="gpt-3.5-turbo", max_tokens=100,temperature=0):
     response = ''
     except_waiting_time = 0.1
     while response == '':
