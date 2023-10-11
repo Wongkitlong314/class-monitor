@@ -1,4 +1,4 @@
-from app.services import quiz_service as quiz, role_play,writing
+from app.services import quiz_service as quiz, role_play,writing,dashboard
 from app.util.responses import TextResponse
 from app.models.message import Message
 
@@ -16,7 +16,7 @@ def start_writing(user_msg: Message):
 
 
 def dashboard(user_msg: Message):
-    return TextResponse("dashboard")
+    return dashboard.dashboard(user_msg)
 
 
 def recommend(user_msg: Message):
