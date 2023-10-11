@@ -63,12 +63,21 @@ def dispatch(user_msg: Message):
             return dashboard(user_msg)
 
     function = dispatcher(FUNCTIONS_WITH_INTRO, text)
+    print("function: ", function)
+    # if not callable(function):
+    #     print("no match")
+    #     prefix = ["Sorry, let's talk some english related topic. The following is my function list:",
+    #               "Let's only talk learning topic. Here is my function list: ",
+    #               "Sorry, let's do the following:"]
+    #     return list_function(prefix)
     if not callable(function):
-        print("no match")
-        prefix = ["Sorry, let's talk some english related topic. The following is my function list:",
-                  "Let's only talk learning topic. Here is my function list: ",
-                  "Sorry, let's do the following:"]
-        return list_function(prefix)
+        sys_pmt = "You are a english learning assistant and a expert in education. " \
+                  "Given student's message, you will give kind reply." \
+                  "And try your best to guide the topic back to english learning."
+        prompt = "Student message: " + user_msg.text
+        response = GPT_request.get_completion(prompt=prompt, sys_prompt=sys_pmt)
+        return TextResponse(response)
+        return TextResponse(function)
 
     # we got a function from function list
     if match(function, "start_quiz"):
@@ -82,7 +91,7 @@ def dispatch(user_msg: Message):
         bot.main_status = StatusEnum.WRITING
         return function(user_msg)
 
-    elif match(function, "talk_english_learning_topic"):
+    elif match(function, "talk_and_ask_english_learning_topic"):
         sys_pmt = "You are a english learning assistant and a expert in education. " \
                   "Given student's message, you will give kind reply." \
                   "And try your best to guide the topic back to english learning."
@@ -97,6 +106,16 @@ def dispatch(user_msg: Message):
     elif match(function, "dashboard"):
         bot.main_status = StatusEnum.DASHBOARD
         return function(user_msg)
+    elif match(function, "dailyread_function"):
+        sys_pmt = "You are an English teacher"
+        prompt = "Write a short article with 200 words. \
+        If there are difficult words, add definition after the word. format: word (part of speech, definition)\
+        for example: happy (adj. feeling or showing pleasure or contentment.)\
+        Return the article with added definition. The article should be related to sport. \
+        Start with Based on your interest in sports, we've selected this article just for you" + \
+                 "Please remember, only generate the article around 200 words, Dont be too long!"
+        response = GPT_request.get_completion(prompt=prompt, sys_prompt=sys_pmt)
+        return TextResponse(response)
     return TextResponse(function.__name__)
 
 
