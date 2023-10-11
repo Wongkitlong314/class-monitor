@@ -5,6 +5,39 @@ from app.core.GPT_call_fun import get_completion
 from app.util.responses import TextResponse
 from app.config.variables import session
 
+writing_comment_functions = [
+    {
+        "name": "grading_student_writing",
+        "description": """You are an English teacher. 
+        Generate fair feedback and reviews for student writing.
+            Rate the writing in these aspects:
+            - Content and Relevance
+            - Organization and Structure
+            - Grammar and Mechanics
+            - Vocabulary and Word Choice
+            - Clarity and Cohesion
+
+            For each aspect, score it on a scale of 0 to 5. 
+            The format should be "score/5". 
+            Provide precise and concise explanations for your ratings. 
+            Students may ask you to explain your ratings and comments.
+            """,
+
+        "parameters": {
+            "type": "object",
+            "description": "Comment and score for student writing.",
+            "properties": {
+                "comment": {
+                    "type": "string",
+                    "description": "Comment and score for student writing. Should have around 200 words"
+
+                }
+            }
+        },
+        "required": ["comment"]
+    }
+]
+
 class Bot:
     def __init__(self, id, data=dict()):
         self.id = id
@@ -39,7 +72,7 @@ def start_writing(user_msg):
             {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
             {"role": "user", "content": "please start by introducing what you can do."}
         ]
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages, fun=writing_comment_functions,temperature=0)
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['writing_msg'] = messages
@@ -55,7 +88,7 @@ def start_writing(user_msg):
 
         # 存储用户回复后，发给chatgpt
         messages = user_bot.data['writing_msg']
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages,fun=writing_comment_functions,temperature=0)
 
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
