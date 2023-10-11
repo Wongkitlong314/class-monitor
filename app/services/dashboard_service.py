@@ -145,86 +145,94 @@ def dashboard(message: Message):
     # else:
     #     bot.inner_status = InnerStatus.FIRST
     #     return TextResponse("You did something wrong")
-    openai.api_key = "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"
-    message.text = message.text + " return in list"
-    result = db_chain(message.text)
-    sql = result["intermediate_steps"][2]['sql_cmd']
-    prompt = get_completion(
-        prompt=message.text + ', what kind of graph should I use to show the data? choose from [bar chart, line chart, pie chart, radar chart]. Only respond with one type of chart, do not include any explanation.',
-        sys_prompt="You are an intelligent data analyst", model="gpt-3.5-turbo", temperature=0)
-    result["intermediate_steps"][2]['sql_cmd'].split("FROM")[0].split("SELECT")[1].split(",")
-    session = SessionLocal()
-    sql_result = session.execute(text(sql)).fetchall()
-    if len(sql_result) == 0:
-        return TextResponse("Sorry, there is no data for your query, please try again.")
-    dict_name = sql.split("FROM")[0].split("SELECT")[1].split(",")
-    new_dict_name = []
-    target_dict = {}
     try:
-        for index, key in enumerate(dict_name):
-            if "AS" in key:
-                key = key.split("AS")[1]
-            key = key.split(".")[-1]
-            key = key.replace("\n", " ")
-            key = key.strip()
-            new_dict_name.append(key)
-            target_dict[key] = []
-            for item in sql_result:
-                target_dict[key].append(item[index])
-        print(target_dict)
-        target_chart_config = dispatcher(CHARTS, prompt)
-        chart = default_chart()
-        result = decimal_to_float(result)
-        if target_chart_config['type'] == "bar" or target_chart_config['type'] == "line" or target_chart_config[
-            'type'] == "scatter":
-            json_spec = JsonSpec(dict_=target_dict, max_value_length=4000)
-            json_toolkit = JsonToolkit(spec=json_spec)
-            print(json_toolkit)
-            json_agent_executor = create_json_agent(
-                llm=OpenAI(temperature=0), toolkit=json_toolkit, verbose=True
-            )
-            result = json_agent_executor.run(
-                "Output all the time in the form of list.",
-            )
-            result = ast.literal_eval(result)
-            print(dict_name)
-            if not isinstance(result[0], int):
-                result_str = [datetime(*item).strftime('%Y-%m-%d') for item in result]
+        openai.api_key = "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"
+        message.text = message.text + " return in list"
+        result = db_chain(message.text)
+        sql = result["intermediate_steps"][2]['sql_cmd']
+        prompt = get_completion(
+            prompt=message.text + ', what kind of graph should I use to show the data? choose from [bar chart, line chart, pie chart, radar chart]. Only respond with one type of chart, do not include any explanation.',
+            sys_prompt="You are an intelligent data analyst", model="gpt-3.5-turbo", temperature=0)
+        result["intermediate_steps"][2]['sql_cmd'].split("FROM")[0].split("SELECT")[1].split(",")
+        session = SessionLocal()
+        sql_result = session.execute(text(sql)).fetchall()
+        if len(sql_result) == 0:
+            return TextResponse("Sorry, there is no data for your query, please try again.")
+        dict_name = sql.split("FROM")[0].split("SELECT")[1].split(",")
+        new_dict_name = []
+        target_dict = {}
+        try:
+            for index, key in enumerate(dict_name):
+                if "AS" in key:
+                    key = key.split("AS")[1]
+                key = key.split(".")[-1]
+                key = key.replace("\n", " ")
+                key = key.strip()
+                new_dict_name.append(key)
+                target_dict[key] = []
+                for item in sql_result:
+                    target_dict[key].append(item[index])
+            print(target_dict)
+            target_chart_config = dispatcher(CHARTS, prompt)
+            chart = default_chart()
+            result = decimal_to_float(result)
+            if target_chart_config['type'] == "bar" or target_chart_config['type'] == "line" or target_chart_config[
+                'type'] == "scatter":
+                json_spec = JsonSpec(dict_=target_dict, max_value_length=4000)
+                json_toolkit = JsonToolkit(spec=json_spec)
+                print(json_toolkit)
+                json_agent_executor = create_json_agent(
+                    llm=OpenAI(temperature=0), toolkit=json_toolkit, verbose=True
+                )
+                result = json_agent_executor.run(
+                    "Output all the time in the form of list.",
+                )
+                result = ast.literal_eval(result)
+                print(dict_name)
+                if not isinstance(result[0], int):
+                    result_str = [datetime(*item).strftime('%Y-%m-%d') for item in result]
+                    target_chart_config["data"]["labels"] = result_str
+                    for key in target_dict.keys():
+                        target_dict[key] = decimal_to_float(target_dict[key])
+                        if not target_dict[key][0] == datetime(*result[0]):
+                            target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
+                else:
+                    target_chart_config["data"]["labels"] = result
+                    for key in target_dict.keys():
+                        target_dict[key] = decimal_to_float(target_dict[key])
+                        if not target_dict[key][0] == result[0]:
+                            target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
+            elif target_chart_config['type'] == "pie":
+                result_str = new_dict_name
                 target_chart_config["data"]["labels"] = result_str
+                target_chart_config["data"]["datasets"].append({"data": []})
                 for key in target_dict.keys():
                     target_dict[key] = decimal_to_float(target_dict[key])
-                    if not target_dict[key][0] == datetime(*result[0]):
-                        target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
-            else:
-                target_chart_config["data"]["labels"] = result
+                    target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
+            elif target_chart_config['type'] == "radar":
+                result_str = new_dict_name
+                target_chart_config["data"]["labels"] = result_str
+                target_chart_config["data"]["datasets"].append({"data": []})
                 for key in target_dict.keys():
                     target_dict[key] = decimal_to_float(target_dict[key])
-                    if not target_dict[key][0] == result[0]:
-                        target_chart_config["data"]["datasets"].append({"label": key, "data": target_dict[key]})
-        elif target_chart_config['type'] == "pie":
-            result_str = new_dict_name
-            target_chart_config["data"]["labels"] = result_str
-            target_chart_config["data"]["datasets"].append({"data": []})
-            for key in target_dict.keys():
-                target_dict[key] = decimal_to_float(target_dict[key])
-                target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
-        elif target_chart_config['type'] == "radar":
-            result_str = new_dict_name
-            target_chart_config["data"]["labels"] = result_str
-            target_chart_config["data"]["datasets"].append({"data": []})
-            for key in target_dict.keys():
-                target_dict[key] = decimal_to_float(target_dict[key])
-                target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
-                target_chart_config["data"]["datasets"][0]["label"] = "Abilities"
-        logger.debug(target_chart_config)
-        chart.config = target_chart_config
-        print(target_chart_config)
-        print(chart.get_url())
-        return ImageResponse(chart.get_url() + '.png', text=summary(message.text, sql, target_dict))
+                    target_chart_config["data"]["datasets"][0]["data"].append(target_dict[key])
+                    target_chart_config["data"]["datasets"][0]["label"] = "Abilities"
+            logger.debug(target_chart_config)
+            chart.config = target_chart_config
+            print(target_chart_config)
+            print(chart.get_url())
+            return ImageResponse(chart.get_url() + '.png', text=summary(message.text, sql, target_dict))
+        except Exception as e:
+            print(e)
+            return TextResponse(
+                summary(message.text + "Sorry, I do not understand your question, please try again.", sql, target_dict))
     except Exception as e:
-        print(e)
-        return TextResponse(
-            summary(message.text + "Sorry, I do not understand your question, please try again.", sql, target_dict))
+        return ButtonResponse(
+            "Sorry, I do not understand your question, please try again: " + \
+            "\n\nA. How many practices and daily reads did Emma Johnson do in the last year" + \
+            "\nB. What kinds of ability that John Smith have? " + \
+            "\nC. How many quizzed and daily reads did Emma Johnson do in the last year",
+            ["A", "B", "C"])
 
 
 def dashboard_exit(message):
