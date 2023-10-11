@@ -4,7 +4,7 @@ openai.api_key = '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'
 
 def get_completion(messages, model="gpt-3.5-turbo-0613", temperature=0):
     response = ''
-    fun = writing_comment_functions = [
+    fun = [
     {
         "name": "grading_student_writing",
         "description": """You are an English teacher. 
