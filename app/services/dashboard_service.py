@@ -121,10 +121,10 @@ def dispatcher(functions, prompt):
 
 def dashboard(message):
     openai.api_key = "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"
-    result = db_chain(message + " return in list")
+    result = db_chain(message.text + " return in list")
     sql = result["intermediate_steps"][2]['sql_cmd']
     prompt = get_completion(
-        prompt=message + ', what kind of graph should I use to show the data? choose from [bar chart, line chart, pie chart, radar chart]. Only respond with one type of chart, do not include any explanation.',
+        prompt=message.text + ', what kind of graph should I use to show the data? choose from [bar chart, line chart, pie chart, radar chart]. Only respond with one type of chart, do not include any explanation.',
         sys_prompt="You are an intelligent data analyst", model="gpt-3.5-turbo", temperature=0)
     result["intermediate_steps"][2]['sql_cmd'].split("FROM")[0].split("SELECT")[1].split(",")
     session = SessionLocal()
@@ -184,7 +184,7 @@ def dashboard(message):
     chart.config = target_chart_config
     print(target_chart_config)
     print(chart.get_url())
-    return ImageResponse(chart.get_url() + '.png', text=summary(message, sql, target_dict))
+    return ImageResponse(chart.get_url() + '.png', text=summary(message.text, sql, target_dict))
 
 
 if __name__ == "__main__":
