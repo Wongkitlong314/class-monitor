@@ -65,7 +65,7 @@ FUNCTIONS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "studentId": {
+                "userMsg": {
                     "type": "string",
                 },
             },
@@ -88,20 +88,45 @@ FUNCTIONS = [
 
     },
     {
-        "id": 5,
-        "name": "talk_english_learning_topic",
+        "id" :4,
+        "name": "dailyread_function",
+        "description": """You are an English teacher. 
+      Write a short article with 200 words. 
+      If there are difficult words, add definition after the word. format: word (part of speech, definition)
+      for example: happy (adj. feeling or showing pleasure or contentment.)
+      Return the article with added definition. The article should be related to sport. 
+      Start with "Based on your interest in sports, we've selected this article just for you.") """,
+
         "parameters": {
             "type": "object",
+            "description": "article",
             "properties": {
-                "userMsg": {
+                "article": {
                     "type": "string",
-                },
-            },
-        },
-        "description": "This function allow student to experience communication with our advanced AI, " +
-                       "especially in english learning topic"
+                    "description": """the content of the article
+          """
 
-    },
+                }
+            }
+        },
+        "required": ["article"]
+    }
+    # {
+    #     "id": 5,
+    #     "name": "talk_and_ask_english_learning_topic",
+    #     "parameters": {
+    #         "type": "object",
+    #         "properties": {
+    #             "userMsg": {
+    #                 "type": "string",
+    #             },
+    #         },
+    #     },
+    #     "description": "This function allow student to experience communication with our advanced AI, " +
+    #                    "especially in english learning topic, such as grammar and vocabulary." +
+    #                    "The parameter of this function is neutral language or a question"
+    #
+    # }
 
 ]
 FUNCTIONS_WITH_INTRO = FUNCTIONS + [{
@@ -119,104 +144,104 @@ FUNCTIONS_WITH_INTRO = FUNCTIONS + [{
 
 }]
 CHARTS = [
-        {
-            "id":0,
-            "name": "Bar_Chart",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "labels": {
-                        "type": "string",
-                        "description": "A label for the dataset which appears in the legend and tooltips, mostly time related",
-                    },
-                    "datasets": {
-                        "type": "array",
-                        "type": "string",
-                        "description": "An array of numbers representing the data values for the corresponding labels.",
-                    },
+    {
+        "id": 0,
+        "name": "Bar_Chart",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "string",
+                    "description": "A label for the dataset which appears in the legend and tooltips, mostly time related",
                 },
-                "required": ["labels", "datasets"],
+                "datasets": {
+                    "type": "array",
+                    "type": "string",
+                    "description": "An array of numbers representing the data values for the corresponding labels.",
+                },
             },
-            "description":"A bar chart provides a visual representation of categorical data with rectangular bars where the lengths are proportional to the values they represent. It can be used to compare different categories of data."
+            "required": ["labels", "datasets"],
         },
-        {
-            "id": 1,
-            "name": "Line_Chart",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "labels": {
-                        "type": "string",
-                        "description": "A label for the dataset which appears in the legend and tooltips, typically time or categorical data points.",
-                    },
-                    "datasets": {
-                        "type": "array",
-                        "type": "string",
-                        "description": "An array of numbers representing the data values plotted against the corresponding labels.",
-                    }
+        "description": "A bar chart provides a visual representation of categorical data with rectangular bars where the lengths are proportional to the values they represent. It can be used to compare different categories of data."
+    },
+    {
+        "id": 1,
+        "name": "Line_Chart",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "string",
+                    "description": "A label for the dataset which appears in the legend and tooltips, typically time or categorical data points.",
                 },
-                "required": ["labels", "datasets"],
+                "datasets": {
+                    "type": "array",
+                    "type": "string",
+                    "description": "An array of numbers representing the data values plotted against the corresponding labels.",
+                }
             },
-            "description": "A line chart displays information as a series of data points connected by straight line segments. It's often used to visualize a trend in data over intervals of time."
+            "required": ["labels", "datasets"],
         },
-        {
-            "id": 2,
-            "name": "Pie_Chart",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "labels": {
-                        "type": "string",
-                        "description": "A label for the dataset which appears in the legend and tooltips, representing distinct categories.",
-                    },
-                    "datasets": {
-                        "type": "array",
-                        "type": "string",
-                        "description": "An array of numbers indicating the proportion of each segment in the pie."
-                    }
+        "description": "A line chart displays information as a series of data points connected by straight line segments. It's often used to visualize a trend in data over intervals of time."
+    },
+    {
+        "id": 2,
+        "name": "Pie_Chart",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "string",
+                    "description": "A label for the dataset which appears in the legend and tooltips, representing distinct categories.",
                 },
-                "required": ["labels", "datasets"],
+                "datasets": {
+                    "type": "array",
+                    "type": "string",
+                    "description": "An array of numbers indicating the proportion of each segment in the pie."
+                }
             },
-            "description": "A pie chart is a circular statistical graphic divided into slices to illustrate numerical proportion. Each slice corresponds to a category and its size is proportional to its value."
+            "required": ["labels", "datasets"],
         },
-        {
-            "id": 3,
-            "name": "Radar_Chart",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "labels": {
-                        "type": "string",
-                        "description": "A label for the dataset which appears in the legend and tooltips, representing different metrics or criteria.",
-                    },
-                    "datasets": {
-                        "type": "string",
-                        "description": "An array of numbers showing the performance or value for each criterion on the radar."
-                    }
+        "description": "A pie chart is a circular statistical graphic divided into slices to illustrate numerical proportion. Each slice corresponds to a category and its size is proportional to its value."
+    },
+    {
+        "id": 3,
+        "name": "Radar_Chart",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "string",
+                    "description": "A label for the dataset which appears in the legend and tooltips, representing different metrics or criteria.",
                 },
-                "required": ["labels", "datasets"],
+                "datasets": {
+                    "type": "string",
+                    "description": "An array of numbers showing the performance or value for each criterion on the radar."
+                }
             },
-            "description": "A radar chart is a graphical method of displaying multivariate data in the form of a two-dimensional chart, representing three or more quantitative variables on axes starting from the same point."
+            "required": ["labels", "datasets"],
         },
-        {
-            "id": 4,
-            "name": "Scatter_Chart",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "labels": {
-                        "type": "string",
-                        "description": "A label for the dataset which appears in the legend and tooltips, typically representing individual data points.",
-                    },
-                    "datasets": {
-                        "type": "string",
-                        "description": "An array of numbers which are plotted to represent the relationship between two variables."
-                    }
+        "description": "A radar chart is a graphical method of displaying multivariate data in the form of a two-dimensional chart, representing three or more quantitative variables on axes starting from the same point."
+    },
+    {
+        "id": 4,
+        "name": "Scatter_Chart",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "string",
+                    "description": "A label for the dataset which appears in the legend and tooltips, typically representing individual data points.",
                 },
-                "required": ["labels", "datasets"],
+                "datasets": {
+                    "type": "string",
+                    "description": "An array of numbers which are plotted to represent the relationship between two variables."
+                }
             },
-            "description": "A scatter chart uses dots to represent values for two different variables. The position of each dot represents its value for those two variables."
-        }
+            "required": ["labels", "datasets"],
+        },
+        "description": "A scatter chart uses dots to represent values for two different variables. The position of each dot represents its value for those two variables."
+    }
 
 ]
 

@@ -1,10 +1,8 @@
 import openai
 import json
 from app.services.candidate import *
-import asyncio
 from logging import getLogger
 
-from app.services.candidate import *
 
 logger = getLogger('app')
 
@@ -36,7 +34,7 @@ def dispatcher(functions, prompt):
     )
     response_message = response["choices"][0]["message"]
     logger.debug(response_message)
-
+    print("message : ", response_message)
     # Step 2: check if GPT wanted to call a function
     if response_message.get("function_call"):
         # Step 3: call the function
@@ -56,7 +54,6 @@ def dispatcher(functions, prompt):
             name = function["name"]
             available_functions[name] = global_dict[name]
         function_name = response_message["function_call"]["name"]
-        print(available_functions)
         function_to_call = available_functions[function_name]
         # print(function_to_call)
         # function_args = json.loads(response_message["function_call"]["arguments"])

@@ -23,11 +23,14 @@ def recommend(user_msg: Message):
     return TextResponse("recommend")
 
 
-def talk_english_learning_topic(userMsg):
+def talk_and_ask_english_learning_topic(userMsg):
     # dummy function
     ...
 
 
 def introduce_function(userMsg):
+    # dummy function
+    ...
+def dailyread_function(article):
     # dummy function
     ...
