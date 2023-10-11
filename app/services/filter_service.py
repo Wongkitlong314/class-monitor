@@ -9,6 +9,7 @@ from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
 from app.services.quiz_service import quiz_exit, start_quiz
 from app.services.role_play import exit_role_play, start_role_play
+from app.services.dashboard import dashboard
 from app.services.writing import start_writing
 from app.core import GPT_request
 import random
@@ -58,6 +59,8 @@ def dispatch(user_msg: Message):
             return start_role_play(user_msg)
         elif status == StatusEnum.WRITING:
             return start_writing(user_msg)
+        elif status == StatusEnum.DASHBOARD:
+            return dashboard(user_msg)
 
     function = dispatcher(FUNCTIONS_WITH_INTRO, text)
     if not callable(function):
@@ -91,6 +94,9 @@ def dispatch(user_msg: Message):
         return list_function(prefix=["Here is the list:",
                                      "We have following function",
                                      "Our function is following"])
+    elif match(function, "dashboard"):
+        bot.main_status = StatusEnum.DASHBOARD
+        return function(user_msg)
     return TextResponse(function.__name__)
 
 
