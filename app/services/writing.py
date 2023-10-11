@@ -39,7 +39,7 @@ def start_writing(user_msg):
             {"role": "user", "content": "My Education level is: %s " % (stu_edu_level)},
             {"role": "user", "content": "please start by introducing what you can do."}
         ]
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages,temperature=0)
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})
         user_bot.data['writing_msg'] = messages
@@ -55,7 +55,7 @@ def start_writing(user_msg):
 
         # 存储用户回复后，发给chatgpt
         messages = user_bot.data['writing_msg']
-        chat_response = get_completion(messages, temperature=0)
+        chat_response = get_completion(messages,temperature=0)
 
         # 存储chatgpt的回复
         messages.append({"role": "system", "content": chat_response})

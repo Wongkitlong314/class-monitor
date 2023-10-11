@@ -1,8 +1,11 @@
 import openai
 import time
+import json
 openai.api_key = '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'
 
-writing_comment_functions = [
+def get_completion(messages, model="gpt-3.5-turbo-0613", temperature=0):
+    response = ''
+    fun = [
     {
         "name": "grading_student_writing",
         "description": """You are an English teacher. 
@@ -34,9 +37,6 @@ writing_comment_functions = [
         "required": ["comment"]
     }
 ]
-
-def get_completion(messages, model="gpt-3.5-turbo", temperature=0):
-    response = ''
     except_waiting_time = 0.1
     while response == '':
         try:
@@ -45,11 +45,15 @@ def get_completion(messages, model="gpt-3.5-turbo", temperature=0):
                 messages=messages,
                 temperature=temperature,
                 request_timeout=50,
-                functions = writing_comment_functions,
-                function_call = "auto"
+                # functions= fun,
+                max_tokens = 100,
+                function_call="auto"
             )
         except Exception as e:
             time.sleep(except_waiting_time)
             if except_waiting_time < 2:
                 except_waiting_time *= 2
+    if response.choices[0].message.get("function_call"):
+        chat_response = json.loads(response.choices[0].message['function_call']['arguments'])['comment']
+        return chat_response
     return response.choices[0].message["content"]
