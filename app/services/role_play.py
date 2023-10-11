@@ -50,7 +50,7 @@ def start_role_play(user_msg):
         messages = user_bot.data['role_play_msg']
 
         # 存储用户的回复
-        messages.append({"role": "user", "content": user_msg_txt})
+        messages.append({"role": "user", "content": 'Role 1: '+user_msg_txt})
         user_bot.data['role_play_msg'] = messages
 
         # 存储用户回复后，发给chatgpt
