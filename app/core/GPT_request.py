@@ -31,6 +31,7 @@ def get_completion(prompt, sys_prompt, model="gpt-3.5-turbo", temperature=0.1):
                 except_waiting_time *= 2
     return response.choices[0].message["content"]
 
+
 # system_prompt = """
 # Act as yourself.
 # """

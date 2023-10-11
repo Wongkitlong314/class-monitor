@@ -1,13 +1,15 @@
 from app.models.message import Message
-from app.core.filter import *
-from app.config.config import FUNCTIONS,FUNCTIONS_WITH_INTRO
+from app.core.filter import dispatcher
+from app.util.responses import TextResponse
+from app.config.config import FUNCTIONS, FUNCTIONS_WITH_INTRO
 from app.dao.user_mapper import UserDAO
 from typing import Callable
 from logging import getLogger
 from app.core.chatbot import Bot
 from app.enums.status_enum import StatusEnum
 from app.services.quiz_service import quiz_exit, start_quiz
-from app.services.role_play import exit_role_play
+from app.services.role_play import exit_role_play, start_role_play
+from app.services.writing import start_writing
 from app.core import GPT_request
 import random
 
@@ -54,6 +56,8 @@ def dispatch(user_msg: Message):
             return start_quiz(user_msg)
         elif status == StatusEnum.ROLE_PLAYING:
             return start_role_play(user_msg)
+        elif status == StatusEnum.WRITING:
+            return start_writing(user_msg)
 
     function = dispatcher(FUNCTIONS_WITH_INTRO, text)
     if not callable(function):
@@ -72,10 +76,13 @@ def dispatch(user_msg: Message):
         bot.main_status = StatusEnum.ROLE_PLAYING
         return function(user_msg)
     elif match(function, "start_writing"):
-        ...
+        bot.main_status = StatusEnum.WRITING
+        return function(user_msg)
+
     elif match(function, "talk_english_learning_topic"):
         sys_pmt = "You are a english learning assistant and a expert in education. " \
-                  "Given student's message, you will give kind reply."
+                  "Given student's message, you will give kind reply." \
+                  "And try your best to guide the topic back to english learning."
         prompt = "Student message: " + user_msg.text
         response = GPT_request.get_completion(prompt=prompt, sys_prompt=sys_pmt)
         return TextResponse(response)
@@ -91,7 +98,7 @@ def match(function: Callable, name: str):
     return function.__name__ == name
 
 
-def list_function(prefix=None,function_list=FUNCTIONS):
+def list_function(prefix=None, function_list=FUNCTIONS):
     prompt = "List all you can do without parameters nor function name? Remember! Just only provide a list"
     response = dispatcher(function_list, prompt)
     if prefix:
