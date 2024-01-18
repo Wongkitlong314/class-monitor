@@ -7,4 +7,6 @@ Chain of Thought & Tree of Thought,
 Function Calling,
 Integration of Human Involvement
 
+One innovative application is leveraging Language Model (LLM) to autonomously analyze database systems, generate SQL queries for data retrieval, and produce JSON for streamlined chart plotting.
+
 We invite you to review our presentation (PPT) for a detailed demonstration and more information.
